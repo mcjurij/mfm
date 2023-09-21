@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1502</width>
+    <height>883</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Binge Watcher</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="frame_2">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="margin" stdset="0">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QCustomPlot" name="customPlot" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="labelInfo">
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+           <pointsize>11</pointsize>
+           <kerning>false</kerning>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::PlainText</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1502</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFIle">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionRead_measurements"/>
+    <addaction name="actionRead_grid_time"/>
+    <addaction name="actionRead_incidents"/>
+    <addaction name="actionRemove_incidents"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuJump_to">
+     <property name="title">
+      <string>Jump to PoI...</string>
+     </property>
+     <addaction name="actionFirst_POI"/>
+     <addaction name="actionLast_POI"/>
+     <addaction name="actionNext_POI"/>
+     <addaction name="actionPrevious_POI"/>
+    </widget>
+    <addaction name="actionFollow_mode"/>
+    <addaction name="actionFollow_mode_5"/>
+    <addaction name="actionFollow_mode_15"/>
+    <addaction name="actionGo_to"/>
+    <addaction name="menuJump_to"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionInteractions"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
+   <widget class="QMenu" name="menuAnalyze">
+    <property name="title">
+     <string>Analyze</string>
+    </property>
+    <addaction name="actionFind_PoIs"/>
+   </widget>
+   <addaction name="menuFIle"/>
+   <addaction name="menuView"/>
+   <addaction name="menuAnalyze"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionRead_measurements">
+   <property name="text">
+    <string>Read measurements...</string>
+   </property>
+   <property name="toolTip">
+    <string>Read measurements</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionFollow_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Follow mode</string>
+   </property>
+  </action>
+  <action name="actionRead_incidents">
+   <property name="text">
+    <string>Read incidents...</string>
+   </property>
+  </action>
+  <action name="actionRemove_incidents">
+   <property name="text">
+    <string>Remove incidents</string>
+   </property>
+  </action>
+  <action name="actionFirst_POI">
+   <property name="text">
+    <string>First PoI</string>
+   </property>
+  </action>
+  <action name="actionLast_POI">
+   <property name="text">
+    <string>Last PoI</string>
+   </property>
+  </action>
+  <action name="actionNext_POI">
+   <property name="text">
+    <string>Next PoI</string>
+   </property>
+  </action>
+  <action name="actionPrevious_POI">
+   <property name="text">
+    <string>Previous PoI</string>
+   </property>
+  </action>
+  <action name="actionFollow_mode_5">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Follow mode 5 mins</string>
+   </property>
+  </action>
+  <action name="actionFollow_mode_15">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Follow mode 15 mins</string>
+   </property>
+  </action>
+  <action name="actionInteractions">
+   <property name="text">
+    <string>Interactions</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionGo_to">
+   <property name="text">
+    <string>Go to...</string>
+   </property>
+  </action>
+  <action name="actionFind_PoIs">
+   <property name="text">
+    <string>Find PoIs in measurements #1</string>
+   </property>
+  </action>
+  <action name="actionRead_grid_time">
+   <property name="text">
+    <string>Read grid time...</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
