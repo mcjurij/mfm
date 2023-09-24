@@ -97,6 +97,9 @@ Ich benutze ihn hauptsächlich weil ich ihn vorher schon kannte, und er das Inpu
 Der Source für den ATmega ist hier:
 ![ATmega 328 src](embedded/ATmega328 "ATmega 328 src")
 
+Damit das Makefile durchläft muss die avr-gcc Toolchain installiert sein. Wenn der ISP angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
+
+
 #### Raspberry Pico W
 
 Der Raspberry Pico W (eigentlich Raspberry Pi Pico W) ist recht neu. Er basiert auf der von Raspberry Pi entwickelten RP2040 MCU, ein dual ARM Cortex M0+ Chip. Takt 133 Mhz.
