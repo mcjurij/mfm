@@ -36,16 +36,19 @@ Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppel
 
 * Eine "Distributor" genannte Platine zum verdoppeln der 10Mhz Clock und 1PPS Signale, versorgt über Netzanschluss. Schaltplan: Distributor.
 
-* Zwei Platinen mit der Schaltung der Netzfrequenzmessung. Schaltpläne: Counter ATmega328p v1 & v2. Beide sind fast identisch und haben 3 Eingänge:
+* Zwei Platinen mit der Schaltung zur Netzfrequenzmessung. Schaltpläne: Counter ATmega328p v1 & v2. Beide sind fast identisch und haben 3 Eingänge:
   - Netzanschluss, zur Messung und Stromversorgung
   - 10 Mhz TTL Clock für ATmega328 CPU
   - 1PPS
 
-Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL für die ATmegas. 1PPS auf 2x 1PPS.
-Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann ob der QCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO als Referenz benutzt werden.
 
+
+Wer günstig an einen GPSDO mit OCXO kommt und der 10 MHz als TTL Level ausgibt ist wohl besser beraten, den zu nehmen statt meine Lösung.
 
 ### GPSDO
+
+Der Carttrain GPSDO ist der billigsten, den ich finden konnte. Er funktioniert bisher tadellos. Er gibt einen Impuls pro Sekunde aus (1PPS auch PPS), von c.a. 2,5 Vpp. Bei der steigende Flanke ist "atomuhrgenau" jeweils der Beginn einer neuen Sekunde.
+Zusätzlich gibt er auch einen 10 Mhz Sinus aus. Da der benutzte Quarz kein OXCO ist, sondern ein spannungsgesteuerter Quarz (VCXO (?)), gibt es ein recht hohes Phasenrauschen.
 
 ### OCXO & Distributor
 
@@ -54,7 +57,12 @@ Mit OCXO meine ich die Platine links im Bild.  Der eigentliche Quarzofen, die Me
 Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgattern die die entrspr. Signale verstärken.
 ![Distributor](hardware/distributor/distributor.png "Distributor")
 
-Die Box hat einen Eingang für 1PPS und 5 Ausgänge:
+Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL als Clock für die ATmegas. 1PPS auf 2x 1PPS.
+
+Der Eingang From OCXO ist innerhalb der Box mit dem OCXO TTL Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
+2x 10 Mhz TTL out, 2x 1PPS out (3,3 Vpp), 1x Sinus 10 Mhz vom OCXO.
+
+Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann ob der QCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
 
 
 ### Counter 1 & 2
@@ -86,6 +94,9 @@ Der ATmega328p ist ein sehr bekannter Vertreter aus der Atmel AVR Familie. https
 
 Ich benutze ihn hauptsächlich weil ich ihn vorher schon kannte, und er das Input Capture Feature hat (Pin 14 / PB0).  
 
+Der Source für den ATmega ist hier:
+![ATmega 328 src](embedded/ATmega328 "ATmega 328 src")
+
 #### Raspberry Pico W
 
 Der Raspberry Pico W (eigentlich Raspberry Pi Pico W) ist recht neu. Er basiert auf der von Raspberry Pi entwickelten RP2040 MCU, ein dual ARM Cortex M0+ Chip. Takt 133 Mhz.
@@ -102,7 +113,7 @@ Die Software besteht aus 4 Komponenten. Eine Embedded SW für jeweils ATmega und
 
 ### Embedded
 
-Um die krosskompilierte SW auf die MCUs zu übertragen werden 2 völlig verschiedene Methoden benutzt. Der ATmega wird über einen In System Programmer (ISP) programmiert. Der Pico W hat einen Taster. Wird der beim Einschalten des Pico Ws gehalten so geht der Pico W in eine spezielle Boot-Sequenz (die nicht überschrieben werden kann). Damit kann man über USB einen "Massenspeicher" mounten und eine .uf2 Datei dort hinkopieren. Das erkennt der Pico W und überträgt diese dann in sein Flashspeicher.
+Um die krosskompilierte SW auf die MCUs zu übertragen werden 2 völlig verschiedene Methoden benutzt. Der ATmega wird über einen In System Programmer (ISP) programmiert. Der Pico W hat einen Taster. Wird der beim Einschalten des Pico Ws gehalten, so geht der Pico W in eine spezielle Boot-Sequenz (die nicht überschrieben werden kann). Damit kann man über USB einen "Massenspeicher" mounten und eine .uf2 Datei dort hinkopieren. Das erkennt der Pico W und überträgt diese dann in sein Flashspeicher.
 
 Ich kann mir vorstellen, dass der Pico W zur Programmierung des Atmegas benutzt werden kann. Das habe ich aus Zeitmangel nicht verfolgt. Es hätte nicht nur den Vorteil, dass man keinen extra ISP braucht sondern, dann man diesen nicht anschliessen muss, was etwas fummellig ist. Allerdings braucht man wegen der 3,3V I/O Spannung des Picos einen Treiber (auch level shifter oder logic converter genannt) zur Umsetzung und da sehe ich Platzprobleme. Die man allerdings nicht hätte wenn man einen kleineren Vertreter der ATmel Serie nehmen würde (ATtiny).  Der ATmega328p ist für diese Anwendung klar überdimensioniert.
 
