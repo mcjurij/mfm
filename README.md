@@ -57,7 +57,7 @@ Die Counter sind bis auf zwei Unterschiede identisch aufgebaut. Beide haben ein 
 
 Die Counter müssen nicht zwingend an 230 V angeschlossen werden. Es geht auch mit einem Steckernetzteil was eine Wechselspannung von c.a. 8 - 10 V liefern sollte. Diese muss an D1 (Suppressordiode, auch TVS Diode) angelegt werden. R1, der Varistor RVAR1 und die Sicherung F1 entfallen dann. Dann braucht man allerdings noch eine Lösung für die symetrische +/-5V Versorgung des Frontends. Insg. daher die aufwändigere Lösung --allerdings Pflichtprogramm für jeden ohne Trenntrafo. Insb. dann wenn mit einem Oszi auf Front Ende Seite gemessen werden soll. 
 
-Der Signalweg anhand Counter 2, counter_mcu_v2, ![Counter ATmega328p v2](blob/master/hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
+Der Signalweg anhand Counter 2, counter_mcu_v2, ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
 
 
 #### Atmel ATmega328p
