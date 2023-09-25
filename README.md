@@ -10,7 +10,7 @@ Mains Frequency Measurement
 
 2. Man kann warten bis der Trigger erreicht ist, lässt dann immer wieder neu triggern und bestimmt den Zeitunterschied zwischen den beiden Triggerevents. Um eine hohe Genauigkeit zu erreichen wird dies über eine längere Zeit gemacht, d.h. über mehrer Perioden des Eingangssignals.
 
-Für eine genaue Bestimmung einer Frequenz im Bereich von 50 Hz, also einer sehr niedrigen Frequenz, mit einer Genauigkeit von mindestens +/ 1mHz eher besser, ist Verfahren Nr 2 offensichtlich das Einzig geeignete. Bei Verfahren Nr 1 müsste man sehr lange Messen um genug Impulse gesehen zu haben.
+Für eine genaue Bestimmung einer Frequenz im Bereich von 50 Hz, also einer sehr niedrigen Frequenz, mit einer Genauigkeit von mindestens +/ 1mHz eher besser, ist Verfahren Nr 2 offensichtlich das einzig geeignete. Bei Verfahren Nr 1 müsste man sehr lange Messen um genug Impulse gesehen zu haben.
 
 Verfahren 2 hat allerdings einen Nachteil. Will man immer die selbe Anzahl an Perioden messen, was hier gemacht wird denn es werden immer 50 Perioden abgemessen, dann ist die MessDAUER abhängig vom MessWERT. Bei einer Frequenz über 50 Hz ist die Messung kürzer als 1 Sekunde. Bei einer Messung unter 50 Hz, länger. Dies zu erwähnen ist wichtig, denn viele mathematische Verfahren gehen von äquidistanten Werten aus. Und auch die Berechnung der Netzzeit benötigt Messwerte im Abstand von 1 Sekunde.
 
@@ -41,25 +41,25 @@ Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppel
   - 10 Mhz TTL Clock für ATmega328 CPU
   - 1PPS
 
+Wer günstig an einen GPSDO mit OCXO kommt und der 10 MHz als TTL Level ausgibt ist wohl besser beraten, den zu nehmen, statt meiner Lösung.
 
-
-Wer günstig an einen GPSDO mit OCXO kommt und der 10 MHz als TTL Level ausgibt ist wohl besser beraten, den zu nehmen statt meine Lösung.
 
 ### GPSDO
 
-Der Carttrain GPSDO ist der billigsten, den ich finden konnte. Er funktioniert bisher tadellos. Er gibt einen Impuls pro Sekunde aus (1PPS auch PPS), von c.a. 2,5 Vpp. Bei der steigende Flanke ist "atomuhrgenau" jeweils der Beginn einer neuen Sekunde.
+Der Carttrain GPSDO ist der billigste, den ich finden konnte. Er funktioniert bisher tadellos. Er gibt einen Impuls pro Sekunde aus (1PPS auch PPS), von c.a. 2,5 Vpp. Bei steigender Flanke ist "atomuhrgenau" jeweils der Beginn einer neuen Sekunde.
 Zusätzlich gibt er auch einen 10 Mhz Sinus aus. Da der benutzte Quarz kein OXCO ist, sondern ein spannungsgesteuerter Quarz (VCXO (?)), gibt es ein recht hohes Phasenrauschen.
+
 
 ### OCXO & Distributor
 
 Mit OCXO meine ich die Platine links im Bild.  Der eigentliche Quarzofen, die Metallkiste (siehe Photo), ist von CTI und gebraucht. Nur die Platine ist neu. Es gibt natürlich bessere und genauere Quarzöfen und Beschaltungen aber für diese Anwendung ist die Genauigkeit mehr als ausreichend. Im EEVblog Forum hat wohl der ein oder andere Probleme mit der Einstellung über das Poti, da das Poti am Anschlag ist aber die Frequenz von 10 Mhz nicht genau erreicht wird. Ich hatte das Problem nicht. 
 
-Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgattern die die entrspr. Signale verstärken.
+Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgattern die die entspr. Signale verstärken.
 ![Distributor](hardware/distributor/distributor.png "Distributor")
 
 Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL als Clock für die ATmegas. 1PPS auf 2x 1PPS.
 
-Der Eingang From OCXO ist innerhalb der Box mit dem OCXO TTL Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
+Der Eingang "From OCXO" ist innerhalb der Box mit dem OCXO TTL Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
 2x 10 Mhz TTL out, 2x 1PPS out (3,3 Vpp), 1x Sinus 10 Mhz vom OCXO.
 
 Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann ob der QCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
@@ -67,7 +67,7 @@ Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach ausse
 
 ### Counter 1 & 2
 
-Die Counter sind bis auf zwei Unterschiede identisch aufgebaut. Beide haben ein Front- und ein Backend. Die Trennung ist dort, wo die Optokoppler sind. Die Masse der +/-5 V Versorgungspannungen ist im Frontend an die Netzspannung gekoppelt. Durch die Optokoppler wird die Netzspannung abgetrennt. Deswegen gibt es zwei Massen GND (Frontend) und GND_2 (Backend) und zwei Spannungsversorgungen.
+Die Counter sind bis auf zwei kleine Unterschiede identisch aufgebaut. Beide haben ein Front- und ein Backend. Die Trennung ist dort, wo die Optokoppler sind. Die Masse der +/-5 V Versorgungspannungen ist im Frontend an die Netzspannung gekoppelt. Durch die Optokoppler wird die Netzspannung abgetrennt. Deswegen gibt es zwei Massen GND (Frontend) und GND_2 (Backend) und zwei Spannungsversorgungen.
 
 Die Counter müssen nicht zwingend an 230 V angeschlossen werden. Es geht auch mit einem Steckernetzteil was eine Wechselspannung von c.a. 8 - 10 V liefern sollte. Diese muss an D1 (Suppressordiode, auch TVS Diode) angelegt werden. R1, der Varistor RVAR1 und die Sicherung F1 entfallen dann. Dann braucht man allerdings noch eine Lösung für die symetrische +/-5V Versorgung des Frontends. Insg. daher die aufwändigere Lösung --allerdings Pflichtprogramm für jeden ohne Trenntrafo. Insb. dann wenn mit einem Oszi auf Front Ende Seite gemessen werden soll. 
 
@@ -81,7 +81,10 @@ Frontend:
 Backend:
 Die Signale aus den 2 Optokopplern werden durch ein S-R Latch U4B, U4A, zu einem Rechtecksingal vereint. Der ATmega hat nur einen Input Capture Eingang (Pin 14). Dieser Eingang wird benutzt um die Zeit zu stoppen in der das Rechteck 0 und 1 ist. Die Genauigkeit ergibt sich dabei aus der Clock des ATmegas, die über den Distributor vom OCXO kommt. Die Zeitstempel werden über UART an den Pico W geschickt. Beide MCUs werden über U7E, U7F und U4D mit dem 1PPS Signal versorgt. Warum das so ist beschreibe ich unter Software.
 
-Hinweis: die Anschlüsse zur Programmierung des ATmegas sind nicht im Schaltplan eingezeichnet.
+
+Die zwei Unterschiede zwischen Counter 1 (Counter ATmega328p v2) und Counter 2 (Counter ATmega328p v1) sind einmal, dass bei Counter 1 das Signal von RV2 an _plus_ Pin von LM311 angeschlossen ist und bei Counter 2 an den _minus_ Pin. Und zum anderem ist der 1PPS Signalweg anders. Die Lösung ist bei Counter ATmega328p v2 IMO besser. Eine Auswirkung auf die SW hat das nicht. Auf beiden läuft exakt die gleiche SW.
+
+Hinweis: Die Anschlüsse zur Programmierung des ATmegas sind _nicht_ im Schaltplan eingezeichnet.
 
 Hinweis: Das Netzteil für das Frontend ist in einem eigenem Schematic.
 ![symmetric power supply](hardware/counter_ps/counter_ps.png "Counter PS")
@@ -93,11 +96,6 @@ Der ATmega328p ist ein sehr bekannter Vertreter aus der Atmel AVR Familie. https
 (Microchip hatte Atmel 2016 gekauft).
 
 Ich benutze ihn hauptsächlich weil ich ihn vorher schon kannte, und er das Input Capture Feature hat (Pin 14 / PB0).  
-
-Der Source für den ATmega ist hier:
-![ATmega 328 src](embedded/ATmega328 "ATmega 328 src")
-
-Damit das Makefile durchläft muss die avr-gcc Toolchain installiert sein. Wenn der ISP angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
 
 
 #### Raspberry Pico W
@@ -112,13 +110,13 @@ Zwar ist die Spannungsversorung auf 5V ausgelegt, sie wird aber vom Pico W auf 3
 
 ## Software
 
-Die Software besteht aus 4 Komponenten. Eine Embedded SW für jeweils ATmega und Pico W. Einem Server der die Daten die per WLan reinkommen entgegennimmt. Und einem einfachen Tool zur graphischen Ausgabe der Daten.
+Die Software besteht aus 4 Komponenten. Eine Embedded SW für jeweils ATmega und Pico W. Einem Server, der die Daten die per WLan reinkommen, entgegennimmt. Und einem einfachen Tool zur graphischen Ausgabe der Daten.
 
 ### Embedded
 
 Um die krosskompilierte SW auf die MCUs zu übertragen werden 2 völlig verschiedene Methoden benutzt. Der ATmega wird über einen In System Programmer (ISP) programmiert. Der Pico W hat einen Taster. Wird der beim Einschalten des Pico Ws gehalten, so geht der Pico W in eine spezielle Boot-Sequenz (die nicht überschrieben werden kann). Damit kann man über USB einen "Massenspeicher" mounten und eine .uf2 Datei dort hinkopieren. Das erkennt der Pico W und überträgt diese dann in sein Flashspeicher.
 
-Ich kann mir vorstellen, dass der Pico W zur Programmierung des Atmegas benutzt werden kann. Das habe ich aus Zeitmangel nicht verfolgt. Es hätte nicht nur den Vorteil, dass man keinen extra ISP braucht sondern, dann man diesen nicht anschliessen muss, was etwas fummellig ist. Allerdings braucht man wegen der 3,3V I/O Spannung des Picos einen Treiber (auch level shifter oder logic converter genannt) zur Umsetzung und da sehe ich Platzprobleme. Die man allerdings nicht hätte wenn man einen kleineren Vertreter der ATmel Serie nehmen würde (ATtiny).  Der ATmega328p ist für diese Anwendung klar überdimensioniert.
+Ich kann mir vorstellen, dass der Pico W zur Programmierung des Atmegas benutzt werden kann. Das habe ich aus Zeitmangel nicht verfolgt. Es hätte den Vorteil, dass man keinen extra ISP braucht. Allerdings braucht man wegen der 3,3V I/O Spannung des Picos einen Treiber (auch level shifter oder logic converter genannt) zur Umsetzung und da sehe ich Platzprobleme. Die man allerdings vermutlich nicht hätte, wenn man einen kleineren Vertreter der ATmel Serie nehmen würde (ATtiny).  Der ATmega328p ist für diese Anwendung klar überdimensioniert.
 
 
 
@@ -126,11 +124,87 @@ Ich kann mir vorstellen, dass der Pico W zur Programmierung des Atmegas benutzt 
 
 Mein ISP https://guloshop.de/shop/Mikrocontroller-Programmierung/guloprog-der-Programmer-von-guloshop-de::70.html
 
+Der Source für den ATmega ist hier:
+![ATmega 328 src](embedded/ATmega328 "ATmega 328 src")
+
+Es gibt nur eine Datei: `main.c`. Da der ATmega nur die Zeitstempel zwischen den Flanken des Rechtecksignals bestimmt und diese per UART an den Pico W schickt, passiert hier nicht viel. Das 1PPS Signal wird benutzt um den Zähler für die Zeitstempel auf 0 zu setzen.
+
+Damit das Makefile durchläuft muss die avr-gcc Toolchain installiert sein. Wenn der ISP im Makefile richtig angegeben und angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
+
 
 #### Raspberry Pico W
 
 
-SDK einrichten. https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#sdk-setup
+Der Source für den Pico W ist hier:
+![Pico W src](embedded/Pico_W/mfm "Pico W src")
+
+Ich benutze kein OS. Der Programmierer legt fest, was auf den 2 Kernen des Pico Ws, Core0 und Core1, laufen soll. Ich habe es so aufgeteilt, dass die Annahme (über UART) und Verarbeitung der Zeitstempel, die vom ATmega kommen, auf Core1 passiert. Die Kommunikation mit dem Server auf Core0 (dort wird main() gestartet).
+
+Der Wlan Chip benutzt Interrupts, die mit Core0 verdrahtet sind und daher kann der Wlan Code nur auf Core0 laufen.
+
+Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von mfm_server. Dieser gibt die Zeit des Hostrechners zurück, die ungenau ist, was kein Problem ist solange sie genau genug ist bezüglich der richtige Sekunde (der Hostrechner bekommt seine Zeit wiederum i.d.R. über NTP. Das Verfahren ist abhängig von der Netzwerklatenz). Diese wird nun mit dem 1PPS Signal abgeglichen und damit erhält man eine sehr genaue Zeit. 
+Ich benutze nicht die Uhr (RTC) des Picos. Der Standardquarz des Picos macht eine ständige Korrektur der Zeit nötig, egal wie man es macht.  Der Pico hat einen Zähler der ab Start hochzählt. Zu diesem addiere ich die Mikrosekunden seit 1.1.1970 0 Uhr.  In einer Interruptroutine, die an das 1PPS Signal gekoppelt ist, wird jede Sekunde geschaut um wieviele Mikrosekunden der Zähler (+ Mikrosekunden seit 1.1.1970 0 Uhr) korrigiert werden muss.
+Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start oder Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
+
+`conf.h`
+`freq.c`
+`main.c`
+`ntime.c`
+`proto.c`
+`ringbuffer.c` 
+
+
+Zunächst mal das C SDK einrichten. https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#sdk-setup
+Unter https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#quick-start-your-own-project steht welche Linux Packages installiert werden müssen.
+
+Git clone und Umgebungsvariable setzem.
+```
+git clone https://github.com/raspberrypi/pico-sdk.git
+
+cd pico-sdk
+git submodule update --init
+
+export PICO_SDK_PATH=$HOME/<path to pico sdk>/pico-sdk/
+```
+
+In das Pico W Verzeichnis wechseln, cmake Aufruf.
+
+```
+cd embedded/Pico_W/
+
+mkdir build
+cd build
+
+cmake -DPICO_BOARD=pico_w -DWIFI_SSID="<your SSID>" -DWIFI_PASSWORD="<your password>" ..
+```
+
+Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/build/mfm/mfm_pico_w.uf2`  (747 kb).
+
 
 
 ### Auf Linux PC
+
+Auf einem Linux PC laufen der mfm_server, der die Daten die über Wlan von den Pico Ws kommen annimmt, weiterverarbeitet und in Dateien schreibt. Diese können von einer GUI, dem "Binge Watcher" bzw mfm_bwatcher, gelesen werden. 
+
+Die Ausgaben die mit printf() gemacht werden, werden über USB übertragen. Dazu auf Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
+
+
+#### mfm_server
+
+Der mfm_server sollte mit einem `make` direkt bauen.
+Der Server startet pro Verbindung, also pro Counter, einen Thread. Die zwei Threads übergeben dann die Messwerte an einen Thread, der die Daten pro Counter rausschreibt und zusätzlich kombiniert. 
+
+Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, dazu gehört das Entkoppeln vom Terminal. Z.Z. gibt es auch keine Möglichkeit den Server mit einem Kontrollprogramm sauber runterzufahren.
+
+`conn_slots.c`
+`file_mgr.c`
+`process_data.c`
+`proto.c` 
+`server.c`
+
+
+#### mfm_bwatcher
+
+Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3.
+Zum Konfigurieren des Projekts auf File->Open File or Project gehen, dann `mfm_bwatcher.pro` laden, dann bei "Configure Project" nur "Desktop ..." auswählen, und auf "Configure Project" Button klicken. Dann unten links auf das grüne Dreieck "Run" clicken. Damit wird gebaut und die mfm_bwatcher GUI gestartet.
+
