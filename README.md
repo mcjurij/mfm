@@ -3,6 +3,9 @@ Mains Frequency Measurement
 
 
 
+
+Mein "Linux PC" ist ein Fedora (z.Z. Fedora 37). Die genutzte Distro spielt aber keine Rolle. 
+
 ## Über die zwei grundsätzlichen Arten Frequenzen zu messen
 
 
@@ -13,8 +16,6 @@ Mains Frequency Measurement
 Für eine genaue Bestimmung einer Frequenz im Bereich von 50 Hz, also einer sehr niedrigen Frequenz, mit einer Genauigkeit von mindestens +/ 1mHz eher besser, ist Verfahren Nr 2 offensichtlich das einzig geeignete. Bei Verfahren Nr 1 müsste man sehr lange Messen um genug Impulse gesehen zu haben.
 
 Verfahren 2 hat allerdings einen Nachteil. Will man immer die selbe Anzahl an Perioden messen, was hier gemacht wird denn es werden immer 50 Perioden abgemessen, dann ist die MessDAUER abhängig vom MessWERT. Bei einer Frequenz über 50 Hz ist die Messung kürzer als 1 Sekunde. Bei einer Messung unter 50 Hz, länger. Dies zu erwähnen ist wichtig, denn viele mathematische Verfahren gehen von äquidistanten Werten aus. Und auch die Berechnung der Netzzeit benötigt Messwerte im Abstand von 1 Sekunde.
-
-Die Platinen mit der Schaltung zur Netzfrequenzmessung werde ich ab jetzt Counter 1 & 2 nennen. Der Name Counter rührt daher, dass die Hauptaufgabe bei der Frequenzmessung das Zählen zwischen 2 Triggerevents ist. Die übernimmt der ATmega als erste Stufe, hier werden erstmal nur Zeitstempel bestimmt. In der zweiten Stufe wird aus den Zeitstempeln des ATmega vom Pico W eine Frequenz berechnet.
 
 
 ## Über Quarze
@@ -40,6 +41,9 @@ Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppel
   - Netzanschluss, zur Messung und Stromversorgung
   - 10 Mhz TTL Clock für ATmega328 CPU
   - 1PPS
+
+
+Die zwei Platinen mit der Schaltung zur Netzfrequenzmessung werde ich ab jetzt Counter 1 & 2 nennen. Der Name Counter rührt daher, dass die Hauptaufgabe bei der Frequenzmessung das Zählen zwischen 2 Triggerevents ist. Die übernimmt der ATmega als erste Stufe, hier werden erstmal nur Zeitstempel bestimmt. In der zweiten Stufe wird aus den Zeitstempeln des ATmega vom Pico W eine Frequenz berechnet.
 
 Wer günstig an einen GPSDO mit OCXO kommt, und der 10 MHz als TTL Level ausgibt, ist wohl besser beraten, den zu nehmen statt meiner Lösung. Es funktioniert dann auch nur mit einem Counter und ohne Distributor. Softwareseitig hätte das keine Anpassungen zur Folge.
 
@@ -97,6 +101,8 @@ Der ATmega328p ist ein sehr bekannter Vertreter aus der Atmel AVR Familie. https
 
 Ich benutze ihn hauptsächlich weil ich ihn vorher schon kannte, und er das Input Capture Feature hat (Pin 14 / PB0).  
 
+Der ATmega wird über einen In System Programmer (ISP) programmiert. Mein ISP https://guloshop.de/shop/Mikrocontroller-Programmierung/guloprog-der-Programmer-von-guloshop-de::70.html
+
 
 #### Raspberry Pico W
 
@@ -122,14 +128,12 @@ Ich kann mir vorstellen, dass der Pico W zur Programmierung des Atmegas benutzt 
 
 #### Atmel ATmega328p
 
-Mein ISP https://guloshop.de/shop/Mikrocontroller-Programmierung/guloprog-der-Programmer-von-guloshop-de::70.html
-
 Der Source für den ATmega ist hier:
 ![ATmega 328 src](embedded/ATmega328 "ATmega 328 src")
 
 Es gibt nur eine Datei: `main.c`. Da der ATmega nur die Zeitstempel zwischen den Flanken des Rechtecksignals bestimmt und diese per UART an den Pico W schickt, passiert hier nicht viel. Das 1PPS Signal wird benutzt um den Zähler für die Zeitstempel auf 0 zu setzen.
 
-Damit das Makefile durchläuft muss die avr-gcc Toolchain installiert sein. Wenn der ISP im Makefile richtig angegeben wurde und angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
+Damit das Makefile durchläuft muss die avr-gcc Toolchain und zum flashen der avrdude installiert sein. Wenn der ISP im Makefile richtig angegeben wurde und angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
 
 
 #### Raspberry Pico W
@@ -146,12 +150,12 @@ Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von 
 Ich benutze nicht die Uhr (RTC) des Picos. Der Standardquarz des Picos macht eine ständige Korrektur der Zeit nötig, egal wie man es macht.  Der Pico hat einen Zähler der ab Start hochzählt. Zu diesem addiere ich die Mikrosekunden seit 1.1.1970 0 Uhr.  In einer Interruptroutine, die an das 1PPS Signal gekoppelt ist, wird jede Sekunde geschaut um wieviele Mikrosekunden der Zähler (+ Mikrosekunden seit 1.1.1970 0 Uhr) korrigiert werden muss.
 Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start oder Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
 
-`conf.h` - Konfiguration wie MAINS_FREQ
-`freq.c` - Empfängt Zeitstempel vom ATmega und berechnet daraus Frequenz. Läuft auf Core1.
-`main.c` - enthält main() was auf Core0 startet, startet Core1. Empfängt auf Core0 die Daten die von `freq.c` in den `ringbuffer.c` geschrieben wurden und sendet sie an den mfm_server.
-`ntime.c` - Bestimmung der genauen Zeit aus Kombination mit Zeit vom Linux PC und 1PPS.
-`proto.c` - Protokoll-definition.
-`ringbuffer.c` - Speichern von Messwerten wenn Netzwerkverbindung (kurz) nicht verfügbar.
+- `conf.h` - Konfiguration wie MAINS_FREQ
+- `freq.c` - Empfängt Zeitstempel vom ATmega und berechnet daraus Frequenz. Läuft auf Core1.
+- `main.c` - enthält main() was auf Core0 startet, startet Core1. Empfängt auf Core0 die Daten die von `freq.c` in den `ringbuffer.c` geschrieben wurden und sendet sie an den mfm_server.
+- `ntime.c` - Bestimmung der genauen Zeit aus Kombination mit Zeit vom Linux PC und 1PPS.
+- `proto.c` - Protokoll-definition.
+- `ringbuffer.c` - Speichern von Messwerten wenn Netzwerkverbindung (kurz) nicht verfügbar.
 
 
 Zunächst mal das C SDK einrichten. https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#sdk-setup
