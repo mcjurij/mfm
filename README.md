@@ -41,7 +41,7 @@ Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppel
   - 10 Mhz TTL Clock für ATmega328 CPU
   - 1PPS
 
-Wer günstig an einen GPSDO mit OCXO kommt und der 10 MHz als TTL Level ausgibt ist wohl besser beraten, den zu nehmen, statt meiner Lösung.
+Wer günstig an einen GPSDO mit OCXO kommt, und der 10 MHz als TTL Level ausgibt, ist wohl besser beraten, den zu nehmen statt meiner Lösung. Es funktioniert dann auch nur mit einem Counter und ohne Distributor. Softwareseitig hätte das keine Anpassungen zur Folge.
 
 
 ### GPSDO
@@ -157,7 +157,7 @@ Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind
 Zunächst mal das C SDK einrichten. https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#sdk-setup
 Unter https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#quick-start-your-own-project steht welche Linux Packages installiert werden müssen.
 
-Git clone und Umgebungsvariable setzem.
+Git clone und Umgebungsvariable setzen.
 ```
 git clone https://github.com/raspberrypi/pico-sdk.git
 
@@ -196,30 +196,30 @@ Der Server startet pro Verbindung, also pro Counter, einen Thread. Die zwei Thre
 
 Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, dazu gehört das Entkoppeln vom Terminal. Z.Z. gibt es auch keine Möglichkeit den Server mit einem Kontrollprogramm sauber runterzufahren.
 
-`conn_slots.c` - jeder Pico W bekommt einen eigenen connection slot, darin steht auch die Pico ID, meine sind Counter 1: E661A4D41723262A und Counter 2: E661A4D41770802F.
+`conn_slots.c` - jeder Pico W bekommt einen eigenen connection slot, nutzt die Pico ID um zu erkennen, dass der selbe Pico W sich erneut angemeldet hat.
 `file_mgr.c` - File Management und Rotation.
 `process_data.c` - Datenauswertung.
 `proto.c` - Protokoll-definition, exakte kopie der Datei im embedded/Pico_W/mfm Verzeichnis.
 `server.c`- Enhält main(), nimmt Netzwerkverbingen an und startet pro Pico W einen Thread.
 
-Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar.
+Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar. Mit us-Epoch sind die Mikrosekunden seit dem 1.1.1970 0 Uhr gemeint. Meine Pico IDs sind Counter 1: E661A4D41723262A und Counter 2: E661A4D41770802F.
 
 | Dateiname                                | Inhalt        |
 | ---------------------------------------- | ------------- |
-|meas_data_E661A4D41723262A_2023-09-25.txt||
-|meas_data_E661A4D41770802F_2023-09-25.txt||
-|meas_data_local_E661A4D41723262A_2023-09-25.txt||
-|meas_data_local_E661A4D41770802F_2023-09-25.txt||
-|meas_sgfit_E661A4D41723262A_2023-09-25.txt||
-|meas_sgfit_E661A4D41770802F_2023-09-25.txt||
-|meas_sgfit_local_E661A4D41723262A_2023-09-25.txt||
-|meas_sgfit_local_E661A4D41770802F_2023-09-25.txt||
-|meas_merge_2023-09-25.txt||
-|meas_merge_sgfit_2023-09-25.txt||
-|gridtime_2023-09-25.txt||
-|gridtime_local_2023-09-25.txt||
-|incidents_E661A4D41723262A_2023-09-25.txt||
-|incidents_E661A4D41770802F_2023-09-25.txt||
+|`meas_data_E661A4D41723262A_2023-09-25.txt`|Messwerte von Counter 1 mit us-Epoch Zeit|
+|`meas_data_E661A4D41770802F_2023-09-25.txt`|Messwerte von Counter 2 mit us-Epoch Zeit|
+|`meas_data_local_E661A4D41723262A_2023-09-25.txt`|Messwerte von Counter 1 mit lokaler Zeit|
+|`meas_data_local_E661A4D41770802F_2023-09-25.txt`|Messwerte von Counter 2 mit lokaler Zeit|
+|`meas_sgfit_E661A4D41723262A_2023-09-25.txt`|Messwerte von Counter 1 mit us-Epoch Zeit, mit Interpolation & Savitzky-Golay filter|
+|`meas_sgfit_E661A4D41770802F_2023-09-25.txt`|Messwerte von Counter 2 mit us-Epoch Zeit, mit Interpolation & Savitzky-Golay filter|
+|`meas_sgfit_local_E661A4D41723262A_2023-09-25.txt`|Messwerte von Counter 1 mit lokaler Zeit, mit Interpolation & Savitzky-Golay filter|
+|`meas_sgfit_local_E661A4D41770802F_2023-09-25.txt`|Messwerte von Counter 1 mit lokaler Zeit, mit Interpolation & Savitzky-Golay filter|
+|`meas_merge_2023-09-25.txt`|Verschmolzene Messwerte von Counter 1 & 2 mit us-Epoch Zeit, mit Interpolation|
+|`meas_merge_sgfit_2023-09-25.txt`|Verschmolzene Messwerte von Counter 1 & 2 mit us-Epoch Zeit, mit Interpolation & Savitzky-Golay filter|
+|`gridtime_2023-09-25.txt`|Netzzeit mit us-Epoch Zeit|
+|`gridtime_local_2023-09-25.txt`|Netzzeit mit lokaler Zeit|
+|`incidents_E661A4D41723262A_2023-09-25.txt`|Incidents von Counter 1|
+|`incidents_E661A4D41770802F_2023-09-25.txt`|Incidents von Counter 2||
 
 
 #### mfm_bwatcher
