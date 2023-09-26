@@ -82,7 +82,7 @@ Backend:
 Die Signale aus den 2 Optokopplern werden durch ein S-R Latch U4B, U4A, zu einem Rechtecksingal vereint. Der ATmega hat nur einen Input Capture Eingang (Pin 14). Dieser Eingang wird benutzt um die Zeit zu stoppen in der das Rechteck 0 und 1 ist. Die Genauigkeit ergibt sich dabei aus der Clock des ATmegas, die über den Distributor vom OCXO kommt. Die Zeitstempel werden über UART an den Pico W geschickt. Beide MCUs werden über U7E, U7F und U4D mit dem 1PPS Signal versorgt. Warum das so ist beschreibe ich unter Software.
 
 
-Die zwei Unterschiede zwischen Counter 1 (Counter ATmega328p v2) und Counter 2 (Counter ATmega328p v1) sind einmal, dass bei Counter 1 das Signal von RV2 an _plus_ Pin von LM311 angeschlossen ist und bei Counter 2 an den _minus_ Pin. Und zum anderem ist der 1PPS Signalweg anders. Die Lösung ist bei Counter ATmega328p v2 IMO besser. Eine Auswirkung auf die SW hat das nicht. Auf beiden läuft exakt die gleiche SW.
+Die zwei Unterschiede zwischen Counter 1 (Counter ATmega328p v2) und Counter 2 (Counter ATmega328p v1) sind einmal, dass bei Counter 1 das Signal von RV2 an den _plus_ Pin vom LM311 geht und bei Counter 2 an den _minus_ Pin. Und zum anderem ist der 1PPS Signalweg anders. Die Lösung ist bei Counter ATmega328p v2 IMO besser. Eine Auswirkung auf die SW hat das nicht. Auf beiden läuft exakt die gleiche SW.
 
 Hinweis: Die Anschlüsse zur Programmierung des ATmegas sind _nicht_ im Schaltplan eingezeichnet.
 
@@ -129,7 +129,7 @@ Der Source für den ATmega ist hier:
 
 Es gibt nur eine Datei: `main.c`. Da der ATmega nur die Zeitstempel zwischen den Flanken des Rechtecksignals bestimmt und diese per UART an den Pico W schickt, passiert hier nicht viel. Das 1PPS Signal wird benutzt um den Zähler für die Zeitstempel auf 0 zu setzen.
 
-Damit das Makefile durchläuft muss die avr-gcc Toolchain installiert sein. Wenn der ISP im Makefile richtig angegeben und angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
+Damit das Makefile durchläuft muss die avr-gcc Toolchain installiert sein. Wenn der ISP im Makefile richtig angegeben wurde und angeschlossen ist, kann mit `make program` in einem Schritt kompiliert und geflashed werden.
 
 
 #### Raspberry Pico W
@@ -142,16 +142,16 @@ Ich benutze kein OS. Der Programmierer legt fest, was auf den 2 Kernen des Pico 
 
 Der Wlan Chip benutzt Interrupts, die mit Core0 verdrahtet sind und daher kann der Wlan Code nur auf Core0 laufen.
 
-Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von mfm_server. Dieser gibt die Zeit des Hostrechners zurück, die ungenau ist, was kein Problem ist solange sie genau genug ist bezüglich der richtige Sekunde (der Hostrechner bekommt seine Zeit wiederum i.d.R. über NTP. Das Verfahren ist abhängig von der Netzwerklatenz). Diese wird nun mit dem 1PPS Signal abgeglichen und damit erhält man eine sehr genaue Zeit. 
+Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von mfm_server. Dieser gibt die Zeit des Hostrechners zurück, die ungenau ist, was kein Problem ist solange sie genau genug ist bezüglich um die richtige Sekunde zu bestimmen (der Hostrechner bekommt seine Zeit wiederum i.d.R. über NTP. Das Verfahren ist abhängig von der Netzwerklatenz). Diese wird nun mit dem 1PPS Signal abgeglichen und damit erhält man eine sehr genaue Zeit. 
 Ich benutze nicht die Uhr (RTC) des Picos. Der Standardquarz des Picos macht eine ständige Korrektur der Zeit nötig, egal wie man es macht.  Der Pico hat einen Zähler der ab Start hochzählt. Zu diesem addiere ich die Mikrosekunden seit 1.1.1970 0 Uhr.  In einer Interruptroutine, die an das 1PPS Signal gekoppelt ist, wird jede Sekunde geschaut um wieviele Mikrosekunden der Zähler (+ Mikrosekunden seit 1.1.1970 0 Uhr) korrigiert werden muss.
 Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start oder Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
 
-`conf.h`
-`freq.c`
-`main.c`
-`ntime.c`
-`proto.c`
-`ringbuffer.c` 
+`conf.h` - Konfiguration wie MAINS_FREQ
+`freq.c` - Empfängt Zeitstempel vom ATmega und berechnet daraus Frequenz. Läuft auf Core1.
+`main.c` - enthält main() was auf Core0 startet, startet Core1. Empfängt auf Core0 die Daten die von `freq.c` in den `ringbuffer.c` geschrieben wurden und sendet sie an den mfm_server.
+`ntime.c` - Bestimmung der genauen Zeit aus Kombination mit Zeit vom Linux PC und 1PPS.
+`proto.c` - Protokoll-definition.
+`ringbuffer.c` - Speichern von Messwerten wenn Netzwerkverbindung (kurz) nicht verfügbar.
 
 
 Zunächst mal das C SDK einrichten. https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html#sdk-setup
@@ -186,7 +186,7 @@ Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/buil
 
 Auf einem Linux PC laufen der mfm_server, der die Daten die über Wlan von den Pico Ws kommen annimmt, weiterverarbeitet und in Dateien schreibt. Diese können von einer GUI, dem "Binge Watcher" bzw mfm_bwatcher, gelesen werden. 
 
-Die Ausgaben die mit printf() gemacht werden, werden über USB übertragen. Dazu auf Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
+Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
 
 
 #### mfm_server
@@ -196,11 +196,30 @@ Der Server startet pro Verbindung, also pro Counter, einen Thread. Die zwei Thre
 
 Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, dazu gehört das Entkoppeln vom Terminal. Z.Z. gibt es auch keine Möglichkeit den Server mit einem Kontrollprogramm sauber runterzufahren.
 
-`conn_slots.c`
-`file_mgr.c`
-`process_data.c`
-`proto.c` 
-`server.c`
+`conn_slots.c` - jeder Pico W bekommt einen eigenen connection slot, darin steht auch die Pico ID, meine sind Counter 1: E661A4D41723262A und Counter 2: E661A4D41770802F.
+`file_mgr.c` - File Management und Rotation.
+`process_data.c` - Datenauswertung.
+`proto.c` - Protokoll-definition, exakte kopie der Datei im embedded/Pico_W/mfm Verzeichnis.
+`server.c`- Enhält main(), nimmt Netzwerkverbingen an und startet pro Pico W einen Thread.
+
+Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar.
+
+| Dateiname                                | Inhalt        |
+| ---------------------------------------- | ------------- |
+|meas_data_E661A4D41723262A_2023-09-25.txt||
+|meas_data_E661A4D41770802F_2023-09-25.txt||
+|meas_data_local_E661A4D41723262A_2023-09-25.txt||
+|meas_data_local_E661A4D41770802F_2023-09-25.txt||
+|meas_sgfit_E661A4D41723262A_2023-09-25.txt||
+|meas_sgfit_E661A4D41770802F_2023-09-25.txt||
+|meas_sgfit_local_E661A4D41723262A_2023-09-25.txt||
+|meas_sgfit_local_E661A4D41770802F_2023-09-25.txt||
+|meas_merge_2023-09-25.txt||
+|meas_merge_sgfit_2023-09-25.txt||
+|gridtime_2023-09-25.txt||
+|gridtime_local_2023-09-25.txt||
+|incidents_E661A4D41723262A_2023-09-25.txt||
+|incidents_E661A4D41770802F_2023-09-25.txt||
 
 
 #### mfm_bwatcher
