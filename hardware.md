@@ -46,7 +46,7 @@ Der Eingang "From OCXO" ist innerhalb der Box mit dem OCXO "OUT-TTL" Ausgang ver
 
 ![OCXO](photos/china_ocxo.jpeg "OCXO")
 
-Der OCXO hat neben TTL Ausgang auch einen mit Sinus "OUT-Sine". Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann, ob der OCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
+Der OCXO hat neben TTL Ausgang auch einen mit Sinus "OUT-Sine". Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann, ob der OCXO auch genau 10 Mhz ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
 
 ![Frequenzvergleich OCXO vs GPSDO](photos/freq_check.jpeg "Frequenzvergleich OCXO vs GPSDO")
 
