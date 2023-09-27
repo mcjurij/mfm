@@ -32,7 +32,7 @@ Zusätzlich gibt er auch einen 10 Mhz Sinus aus. Da der benutzte Quarz kein OXCO
 ### OCXO & Distributor
 
 
-![OCXO & Distributor Box](photos/photos/ocxo_distributor.jpeg "OCXO & Distributor Box")
+![OCXO & Distributor Box](photos/ocxo_distributor.jpeg "OCXO & Distributor Box")
 
 Mit OCXO meine ich die Platine links im Bild.  Der eigentliche Quarzofen, die Metallkiste (siehe Photo), ist von CTI und gebraucht. Nur die Platine ist neu. Es gibt natürlich bessere und genauere Quarzöfen und Beschaltungen aber für diese Anwendung ist die Genauigkeit mehr als ausreichend. Im EEVblog Forum hat wohl der ein oder andere Probleme mit der Einstellung über das Poti, da das Poti am Anschlag ist aber die Frequenz von 10 Mhz nicht genau erreicht wird. Ich hatte das Problem nicht. 
 
@@ -41,12 +41,12 @@ Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgatte
 
 Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL als Clock für die ATmegas. 1PPS auf 2x 1PPS.
 
-Der Eingang "From OCXO" ist innerhalb der Box mit dem OCXO TTL Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
+Der Eingang "From OCXO" ist innerhalb der Box mit dem OCXO "OUT-TTL" Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
 2x 10 Mhz TTL out, 2x 1PPS out (3,3 Vpp), 1x Sinus 10 Mhz vom OCXO.
 
 ![OCXO](photos/china_ocxo.jpeg "OCXO")
 
-Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann ob der QCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
+Der OCXO hat neben TTL Ausgang auch einen mit Sinus "OUT-Sine". Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann, ob der OCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
 
 
 ### Counter 1 & 2
@@ -61,6 +61,7 @@ Counter 1:
 Counter 2:
 ![Counter 2](photos/counter_1.jpeg "Counter 2")
 
+Die beiden sind nicht exakt wie in den Schematics aufgebaut. Der Grund für den Längsregler rechts von den IRMs ist, dass die IRM 9V liefern. Das kann man sich aber sparen, wenn man den richtigen IRM nimmt. Also einen mit 5 V am Ausgang.
 
 Der Signalweg anhand Counter 1, Schaltplan counter_mcu_v2.
 ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
@@ -81,6 +82,11 @@ Hinweis: Die Anschlüsse zur Programmierung des ATmegas sind _nicht_ im Schaltpl
 Hinweis: Das Netzteil für das Frontend ist in einem eigenem Schematic.
 ![symmetric power supply](hardware/counter_ps/counter_ps.png "Counter PS")
 
+Der Grund für 2 Counter ist,
+* dass die Messungen beider gegeneinander verglichen werden können.
+* Ausfallsicherheit, insb bei SW Updates.
+* Beschaltung des LM311 im Frontend unterschiedlich, dadurch etwas anderes Verhalten.
+
 
 #### Atmel ATmega328p
 
@@ -89,7 +95,11 @@ Der ATmega328p ist ein sehr bekannter Vertreter aus der Atmel AVR Familie. https
 
 Ich benutze ihn hauptsächlich weil ich ihn vorher schon kannte, und er das Input Capture Feature hat (Pin 14 / PB0).  
 
-Der ATmega wird über einen In System Programmer (ISP) programmiert. Mein ISP https://guloshop.de/shop/Mikrocontroller-Programmierung/guloprog-der-Programmer-von-guloshop-de::70.html
+Der ATmega wird über einen In System Programmer (ISP) programmiert. Mein ISP https://guloshop.de/shop/Mikrocontroller-Programmierung/guloprog-der-Programmer-von-guloshop-de::70.html .
+Ausgaben von `dmesg` wenn mein ISP per USB angeschlossen wird:
+
+![dmesg Ausgabe ISP](photos/isp_dmesg.png "dmesg ISP")
+
 
 Damit der ATmega die 10 Mhz Clock an Pin 9 / XTAL1 benutzt, statt der internen, müssen die sog. fuse Bits für einen "external oscillator >8 Mhz" gesetzt werden:
 ```

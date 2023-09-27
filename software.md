@@ -67,6 +67,9 @@ cd build
 cmake -DPICO_BOARD=pico_w -DWIFI_SSID="<your SSID>" -DWIFI_PASSWORD="<your password>" ..
 ```
 
+Das sollte zu diesen Ausgaben führen. Ich habe meine Pfade hier geschwärzt.
+![cmake Ausgabe](photos/cmake_run.png "cmake")
+
 Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/build/mfm/mfm_pico_w.uf2`  (747 kb).
 
 
@@ -88,7 +91,7 @@ Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, d
 - `conn_slots.c` - jeder Pico W bekommt einen eigenen connection slot, nutzt die Pico ID um zu erkennen, dass der selbe Pico W sich erneut angemeldet hat.
 - `file_mgr.c` - File Management und Rotation.
 - `process_data.c` - Datenauswertung.
-- `proto.c` - Protokoll-definition, exakte kopie der Datei im embedded/Pico_W/mfm Verzeichnis.
+- `proto.c` - Protokoll-definition, exakte Kopie der Datei im embedded/Pico_W/mfm Verzeichnis.
 - `server.c`- Enhält main(), nimmt Netzwerkverbingen an und startet pro Pico W einen Thread.
 
 Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. Nachdem ein Pico W eine Verbindung zum mfm_server aufgebaut hat sendet er als erstes seine ID. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar. Mit us-Epoch sind die Mikrosekunden seit dem 1.1.1970 0 Uhr gemeint. Meine Pico Ws haben die IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
@@ -109,7 +112,7 @@ Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mf
 |`gridtime_2023-09-25.txt`|Netzzeit mit us-Epoch Zeit|
 |`gridtime_local_2023-09-25.txt`|Netzzeit mit lokaler Zeit|
 |`incidents_E661A4D41723262A_2023-09-25.txt`|Incidents von Counter 1|
-|`incidents_E661A4D41770802F_2023-09-25.txt`|Incidents von Counter 2||
+|`incidents_E661A4D41770802F_2023-09-25.txt`|Incidents von Counter 2|
 
 Die Interpolation ist einfach zwischen zwei Messwerten linear interpoliert, und zwar so, dass man einen Wert pro Sekunde erhält. Der Savitzky-Golay Filter kann (in dieser Form) nur mit äquidistanten Werten arbeiten. Bei `meas_merge_*` wird der Mittelwert aus den beiden Interpolationen von Counter 1 und 2 genommen. Bei `meas_merge_sgfit_*` wird für Counter 1 & 2 jeweils erst interpoliert, dann jeweils der Savitzky-Golay Filter angewendet und danach der Mittelwert von diesen beiden Werten genommen.
 
@@ -122,3 +125,11 @@ Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr sc
 
 Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3.
 Zum Konfigurieren des Projekts auf File->Open File or Project gehen, dann `mfm_bwatcher.pro` laden, dann bei "Configure Project" nur "Desktop ..." auswählen, und auf "Configure Project" Button klicken. Dann unten links auf das grüne Dreieck "Run" clicken. Damit wird gebaut und die mfm_bwatcher GUI gestartet.
+
+
+![Binge Watcher Follow Mode](photos/bwatcher_1.png "Binge Watcher Follow Mode")
+Dieser Screenshot zeigt die Daten von Counter 1: `meas_data_E661A4D41723262A_2023-09-27.txt` und `meas_sgfit_E661A4D41723262A_2023-09-27.txt`. Man sieht den Effekt des Savitzky-Golay Filters.
+Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und der Graph im Sekundentakt erneuert. Zu erkennen ist der Follow mode an dem Kästchen mit Wert und Pfeil.
+
+![Binge Watcher Follow Mode](photos/bwatcher_2.png "Binge Watcher Follow Mode")
+Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen.
