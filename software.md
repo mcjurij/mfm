@@ -33,7 +33,7 @@ Der Wlan Chip benutzt Interrupts, die mit Core0 verdrahtet sind und daher kann d
 
 Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von mfm_server. Dieser gibt die Zeit des Hostrechners zurück, die ungenau ist, was kein Problem ist solange sie genau genug ist bezüglich um die richtige Sekunde zu bestimmen (der Hostrechner bekommt seine Zeit wiederum i.d.R. über NTP. Das Verfahren ist abhängig von der Netzwerklatenz). Diese wird nun mit dem 1PPS Signal abgeglichen und damit erhält man eine sehr genaue Zeit. 
 Ich benutze nicht die Uhr (RTC) des Picos. Der Standardquarz des Picos macht eine ständige Korrektur der Zeit nötig, egal wie man es macht.  Der Pico hat einen Zähler der ab Start hochzählt. Zu diesem addiere ich die Mikrosekunden seit 1.1.1970 0 Uhr.  In einer Interruptroutine, die an das 1PPS Signal gekoppelt ist, wird jede Sekunde geschaut um wieviele Mikrosekunden der Zähler (+ Mikrosekunden seit 1.1.1970 0 Uhr) korrigiert werden muss.
-Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start oder Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
+Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start/Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
 
 - `conf.h` - Konfiguration wie MAINS_FREQ
 - `freq.c` - Empfängt Zeitstempel vom ATmega und berechnet daraus Frequenz. Läuft auf Core1.
@@ -129,7 +129,7 @@ Zum Konfigurieren des Projekts auf File->Open File or Project gehen, dann `mfm_b
 
 ![Binge Watcher Follow Mode](photos/bwatcher_1.png "Binge Watcher Follow Mode")
 Dieser Screenshot zeigt die Daten von Counter 1: `meas_data_E661A4D41723262A_2023-09-27.txt` und `meas_sgfit_E661A4D41723262A_2023-09-27.txt`. Man sieht den Effekt des Savitzky-Golay Filters.
-Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und der Graph im Sekundentakt erneuert. Zu erkennen ist der Follow mode an dem Kästchen mit Wert und Pfeil.
+Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und der Graph im Sekundentakt erneuert. Zu erkennen ist der Follow mode an dem Kästchen mit Wert und Pfeil an der rechten y-Achse (im Source AxisTag genannt).
 
 ![Binge Watcher Follow Mode](photos/bwatcher_2.png "Binge Watcher Follow Mode")
 Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen.
