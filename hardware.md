@@ -14,19 +14,25 @@ Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppel
   - 10 Mhz TTL Clock für ATmega328 CPU
   - 1PPS
 
-
 Die zwei Platinen mit der Schaltung zur Netzfrequenzmessung werde ich ab jetzt Counter 1 & 2 nennen. Der Name Counter rührt daher, dass die Hauptaufgabe bei der Frequenzmessung das Zählen zwischen 2 Triggerevents ist. Die übernimmt der ATmega als erste Stufe, hier werden erstmal nur Zeitstempel bestimmt. In der zweiten Stufe wird aus den Zeitstempeln des ATmega vom Pico W eine Frequenz berechnet.
+
+![3 Boxes](photos/mfm_boxes.jpeg "3 Boxes")
 
 Wer günstig an einen GPSDO mit OCXO kommt, und der 10 MHz als TTL Level ausgibt, ist wohl besser beraten, den zu nehmen statt meiner Lösung. Es funktioniert dann auch nur mit einem Counter und ohne Distributor. Softwareseitig hätte das keine Anpassungen zur Folge.
 
 
 ### GPSDO
 
-Der Carttrain GPSDO ist der billigste, den ich finden konnte. Er funktioniert bisher tadellos. Er gibt einen Impuls pro Sekunde aus (1PPS auch PPS), von c.a. 2,5 Vpp. Bei steigender Flanke ist "atomuhrgenau" jeweils der Beginn einer neuen Sekunde.
+Der Cartain GPSDO ist der billigste, den ich finden konnte. Er funktioniert bisher tadellos. Er gibt einen Impuls pro Sekunde aus (1PPS auch PPS), von c.a. 2,5 Vpp. Bei steigender Flanke ist "atomuhrgenau" jeweils der Beginn einer neuen Sekunde.
 Zusätzlich gibt er auch einen 10 Mhz Sinus aus. Da der benutzte Quarz kein OXCO ist, sondern ein spannungsgesteuerter Quarz (VCXO (?)), gibt es ein recht hohes Phasenrauschen.
+
+![Cartain GPSDXO](photos/gpsdxo.jpeg "Cartain GPSDXO")
 
 
 ### OCXO & Distributor
+
+
+![OCXO & Distributor Box](photos/photos/ocxo_distributor.jpeg "OCXO & Distributor Box")
 
 Mit OCXO meine ich die Platine links im Bild.  Der eigentliche Quarzofen, die Metallkiste (siehe Photo), ist von CTI und gebraucht. Nur die Platine ist neu. Es gibt natürlich bessere und genauere Quarzöfen und Beschaltungen aber für diese Anwendung ist die Genauigkeit mehr als ausreichend. Im EEVblog Forum hat wohl der ein oder andere Probleme mit der Einstellung über das Poti, da das Poti am Anschlag ist aber die Frequenz von 10 Mhz nicht genau erreicht wird. Ich hatte das Problem nicht. 
 
@@ -38,6 +44,8 @@ Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL als Clo
 Der Eingang "From OCXO" ist innerhalb der Box mit dem OCXO TTL Ausgang verbunden. Somit hat die Box einen Eingang für 1PPS und 5 Ausgänge:
 2x 10 Mhz TTL out, 2x 1PPS out (3,3 Vpp), 1x Sinus 10 Mhz vom OCXO.
 
+![OCXO](photos/china_ocxo.jpeg "OCXO")
+
 Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach aussen geführt damit man mit einem Frequenzmesser aka Frequency Counter nachprüfen kann ob der QCXO auch genau 10 Mhz Ausgibt. Dabei kann der GPSDO 10 Mhz Sinus Out als Referenz benutzt werden.
 
 
@@ -45,7 +53,14 @@ Der OCXO hat neben TTL Ausgang auch einen mit Sinus. Dieser wird auch nach ausse
 
 Die Counter sind bis auf zwei kleine Unterschiede identisch aufgebaut. Beide haben ein Front- und ein Backend. Die Trennung ist dort, wo die Optokoppler sind. Die Masse der +/-5 V Versorgungspannungen ist im Frontend an die Netzspannung gekoppelt. Durch die Optokoppler wird die Netzspannung abgetrennt. Deswegen gibt es zwei Massen GND (Frontend) und GND_2 (Backend) und zwei Spannungsversorgungen.
 
-Die Counter müssen nicht zwingend an 230 V angeschlossen werden. Es geht auch mit einem Steckernetzteil was eine Wechselspannung von c.a. 8 - 10 V liefern sollte. Diese muss an D1 (Suppressordiode, auch TVS Diode) angelegt werden. R1, der Varistor RVAR1 und die Sicherung F1 entfallen dann. Dann braucht man allerdings noch eine Lösung für die symetrische +/-5V Versorgung des Frontends. Insg. daher die aufwändigere Lösung --allerdings Pflichtprogramm für jeden ohne Trenntrafo. Insb. dann wenn mit einem Oszi auf Frontend Seite gemessen werden soll. 
+Die Counter müssen nicht zwingend an 230 V angeschlossen werden. Es geht auch mit einem Steckernetzteil was eine Wechselspannung von c.a. 8 - 10 V liefern sollte. Diese muss an D1 (Suppressordiode, auch TVS Diode) angelegt werden. R1, der Varistor RVAR1 und die Sicherung F1 entfallen dann. Dann braucht man allerdings noch eine Lösung für die symetrische +/-5V Versorgung des Frontends. Insg. daher die aufwändigere Lösung --allerdings Pflichtprogramm für jeden ohne Trenntrafo. Insb. dann wenn mit einem Oszi auf Frontend Seite gemessen werden soll.
+
+Counter 1:
+![Counter 1](photos/counter_1.jpeg "Counter 1")
+
+Counter 2:
+![Counter 2](photos/counter_1.jpeg "Counter 2")
+
 
 Der Signalweg anhand Counter 1, Schaltplan counter_mcu_v2.
 ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
