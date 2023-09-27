@@ -40,6 +40,7 @@ Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind
 - `main.c` - enthält main() was auf Core0 startet, startet Core1. Empfängt auf Core0 die Daten die von `freq.c` in den `ringbuffer.c` geschrieben wurden und sendet sie an den mfm_server.
 - `ntime.c` - Bestimmung der genauen Zeit aus Kombination mit Zeit vom Linux PC und 1PPS.
 - `proto.c` - Protokoll-definition.
+- `tcp_client.c` - Kommunikation mit dem mfm_server. Die lwip call-back API ist _sehr_ fummelig.
 - `ringbuffer.c` - Speichern von Messwerten wenn Netzwerkverbindung (kurz) nicht verfügbar.
 
 
