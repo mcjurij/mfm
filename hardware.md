@@ -60,7 +60,7 @@ Counter 1:
 ![Counter 1](photos/counter_1.jpeg "Counter 1")
 
 Counter 2:
-![Counter 2](photos/counter_1.jpeg "Counter 2")
+![Counter 2](photos/counter_2.jpeg "Counter 2")
 
 Die beiden sind nicht exakt wie in den Schematics aufgebaut. Der Grund für den Längsregler rechts von den IRMs ist, dass die IRM 9V liefern. Das kann man sich aber sparen, wenn man den richtigen IRM nimmt. Also einen mit 5 V am Ausgang.
 
