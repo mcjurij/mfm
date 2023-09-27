@@ -64,7 +64,7 @@ Counter 2:
 
 Die beiden sind nicht exakt wie in den Schematics aufgebaut. Der Grund für den Längsregler rechts von den IRMs ist, dass die IRM 9V liefern. Das kann man sich aber sparen, wenn man den richtigen IRM nimmt. Also einen mit 5 V am Ausgang.
 
-Der Signalweg anhand Counter 1, Schaltplan counter_mcu_v2.
+Der Signalweg anhand Counter 1, Schaltplan counter_mcu.kicad_sch.
 ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
 
 
