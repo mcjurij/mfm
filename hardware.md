@@ -109,6 +109,9 @@ avrdude -p atmega328p -P usb -c usbasp -U lfuse:w:0xee:m -U hfuse:w:0xd9:m -U ef
 
 Dazu muss das `avrdude` Tool installiert sein, was auch für das Schreiben ins Flash benötigt wird.
 
+Hier ein Bild was den angeschlossenen ISP zeigt. Die Schablone zeigt die Anschlussbelegung.
+![guloprog ISP](photos/guloprog_isp.jpeg "guloprog ISP")
+
 
 #### Raspberry Pico W
 

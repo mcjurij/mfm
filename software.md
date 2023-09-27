@@ -77,9 +77,9 @@ Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/buil
 
 ### Auf Linux PC
 
-Auf einem Linux PC laufen der mfm_server, der die Daten die über Wlan von den Pico Ws kommen annimmt, weiterverarbeitet und in Dateien schreibt. Diese können von einer GUI, dem "Binge Watcher" bzw mfm_bwatcher, gelesen werden. 
+Auf einem Linux PC läuft der mfm_server, der die Daten die über Wlan von den Pico Ws kommen annimmt, weiterverarbeitet und in Dateien schreibt. Diese können von einer GUI, dem "Binge Watcher" bzw mfm_bwatcher, gelesen werden. 
 
-Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
+Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf dem Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
 
 
 #### mfm_server
@@ -120,6 +120,8 @@ Die Interpolation ist einfach zwischen zwei Messwerten linear interpoliert, und 
 Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden.
 
 Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut. Implementation siehe  https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553 
+
+Der mfm_server hat ein Log-File `log.txt`. Dort finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents.
 
 
 #### mfm_bwatcher

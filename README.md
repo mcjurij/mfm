@@ -23,7 +23,7 @@ Verfahren 2 hat allerdings einen Nachteil. Will man immer die selbe Anzahl an Pe
 
 ## Über Quarze
 
-Es gibt verschiedene Arten eine Frequenz von zB exakt 10 Mhz zu erzeugen. Standardquarze, temperaturkompensierte Quarze und Quarzöfen (Oven Controlled Crystal Oscillator, OCXO) sind die gängisten Methoden, wobei jeweils eine Balance zwischen Kosten/Aufwand und Anforderung der Anwendung gefunden werden muss. Ein Standardquarz war für meine Geschmack zu ungenau. Standardquarze sind recht temperaturabhängig. Diese Temperaturabhängigkeit konnte ich in meinen Experimenten deutlich sehen. Eine Genauigkeit von +/- 1 mHz war so nicht zu erreichen, IMO.
+Es gibt verschiedene Arten eine Frequenz von zB exakt 10 Mhz zu erzeugen. Standardquarze, temperaturkompensierte Quarze und Quarzöfen (Oven Controlled Crystal Oscillator, OCXO) sind die gängisten Methoden, wobei jeweils eine Balance zwischen Kosten/Aufwand und Anforderung der Anwendung gefunden werden muss. Ein Standardquarz war für meinen Geschmack zu ungenau. Standardquarze sind recht temperaturabhängig. Diese Temperaturabhängigkeit konnte ich in meinen Experimenten deutlich sehen. Eine Genauigkeit von +/- 1 mHz war so nicht zu erreichen, IMO.
 
 Ein temperaturkompensierter Quarz (Temperature Compensated Crystal Oscillator, TCXO) korrigiert den Fehler nach Messung der Temperatur des Quarzes. Das Verfahren ist i.A. sehr viel genauer als ein Standardquarz. Diese sind aber schwer zu bekommen.
 
