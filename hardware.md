@@ -81,7 +81,7 @@ Die zwei Unterschiede zwischen Counter 1 (Counter ATmega328p v2) und Counter 2 (
 
 Hinweis: Die Anschlüsse zur Programmierung des ATmegas sind _nicht_ im Schaltplan eingezeichnet.
 
-Hinweis: Das Netzteil für das Frontend ist in einem eigenem Schematic.
+Hinweis: Das Netzteil für das Frontend ist in einem eigenem Schematic: `hardware/counter_ps/counter_ps.kicad_sch`.
 ![symmetric power supply](hardware/counter_ps/counter_ps.png "Counter PS")
 
 Der Grund für 2 Counter ist,
