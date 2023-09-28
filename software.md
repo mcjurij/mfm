@@ -137,7 +137,7 @@ Dieser Screenshot zeigt die Daten von Counter 1: `meas_data_E661A4D41723262A_202
 Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und der Graph im Sekundentakt erneuert. Zu erkennen ist der Follow mode an dem Kästchen mit Wert und Pfeil an der rechten y-Achse (im Source AxisTag genannt).
 
 ![Binge Watcher Follow Mode](photos/bwatcher_2.png "Binge Watcher Follow Mode")
-Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen.
+Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen. Wobei man dazu sagen muss, dass die Unterschiede der Messungen von Counter 1 und 2 eh sehr klein sind und nur bei Rundsteuersignalen wirklich relevant sind.
 
 Die Zeit auf der x-Achse ist immer die lokale Zeit.
 
