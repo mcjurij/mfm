@@ -123,6 +123,7 @@ Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr sc
 
 Der mfm_server hat ein Log-File `log.txt`. Dort finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents.
 
+Zu Incidents schreibe ich weiter unten was.
 
 #### mfm_bwatcher
 
@@ -139,3 +140,89 @@ Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und
 Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen.
 
 Die Zeit auf der x-Achse ist immer die lokale Zeit.
+
+
+### Incidents
+
+Wenn der Pico W die Zeitstempel vom ATmega auswertet kann es passieren das Auffälligkeiten festgestellt werden. Dies für dann zu einem Incident. Ob ein Incident vorliegt wird ab hier geprüft:
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L476
+
+Es kann mehrere Incidents durch eine Messung geben.
+
+
+#### ERROR: measurement failed
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L481C23-L481C32
+
+Komplette Messung fehlgeschlagen.
+
+#### ERROR: rise measurement failed
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L498C39-L498C70
+
+Messung der steigenden Flanken fehlgeschlagen.
+
+#### ERROR: fall measurement failed
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L513C39-L513C69
+
+Messung der fallenden Flanken fehlgeschlagen.
+
+#### NOTE: mains frequency of %.4f Hz too low
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L530
+
+Netzfrequenz unter 49.9 Hz.
+
+#### NOTE: mains frequency of %.4f Hz too high
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L544C43-L544C84
+
+Netzfrequenz über 50.1 Hz.
+
+#### ERROR: rise vs fall deviation of %.4f%% too large
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L559
+
+Abweichung der Messungen für fallende und steigende Flanken zu gross.
+
+#### WARNING: rise vs fall deviation of %.4f%% large
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L573
+
+Abweichung der Messungen für fallende und steigende Flanken zu gross.
+
+#### ERROR: rise diff stddev of %.2f is too high
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L603
+
+Die Standardabweichung der Messung mit steigenden Flanken ist zu gross.
+
+#### ERROR: fall diff stddev of %.2f is too high
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L618
+
+Die Standardabweichung der Messung mit fallenden Flanken ist zu gross.
+
+#### ERROR: %d erratic diff(s)
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L634C43-L634C68
+
+Falsche Differenzen (im Code diffs genannt). Differenzen sind die Zeit zwischen zwei entweder steigenden oder fallenden Flanken.
+
+#### WARNING: %d corrected diffs
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L650
+
+Mehr als 4 korrigierte Differenzen. Differenzen müssen immer dann korrigiert werden, wenn auf ATmega Seite ein Zeitstempel bestimmt wurde der den letzten Überlauf des Zählerregisters noch nicht mitbekommen hatte.
+
+
+#### Anzeigen von Incidents im mfm_bwatcher
+
+Zu einer Datei mit Messwerten zB `meas_data_<Pico ID>__<Date>.txt' kann man auch eine `incidents_<Pico ID>_<Date>.txt` dazu laden. Gleiche Pico ID und gleiches Datum. Das sieht dann zB so aus:
+
+![Binge Watcher Incidents zoom](photos/bwatcher_incid_zoom.png "Binge Watcher Incidents zoom")
+
+Um jedes Incident lesen zu können muss man entlang der x-Achse sehr stark reinzoomen, da sie sich überlappen. Daher ist die x-Achse selektiert und blau angezeigt. Zoomen mit Mausrad.
+Die ist ein typischer Fall von Incidents die durch ein Rundsteuersignal ausgelöst werden. Das dürften so 95% aller Incidents sein.
+
+Das Einblenden der Incidents verbraucht im mfm_bwatcher sehr viel CPU, wenn man zusätzlich in den Follow mode geht. Das benutzte Widget (QCustomPlot) ist für diese Anwendung nicht optimiert.
