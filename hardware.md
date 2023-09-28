@@ -1,7 +1,7 @@
 
 ## Hardware
 
-Das MFM Projekt (kurz MFM) besteht aus 4 hardware Komponenten. Wovon eine doppelt vorhanden ist.
+Das mfm Projekt besteht aus 4 hardware Komponenten. Wovon eine doppelt vorhanden ist.
 
 * Ein GPS disciplined oscillator (GPSDO oder auch GPSDXO) mit 1PPS Ausgang
 
@@ -111,6 +111,8 @@ Dazu muss das `avrdude` Tool installiert sein, was auch für das Schreiben ins F
 
 Hier ein Bild was den angeschlossenen ISP zeigt. Die Schablone zeigt die Anschlussbelegung.
 ![guloprog ISP](photos/guloprog_isp.jpeg "guloprog ISP")
+
+Dabei sind die Farben vom Hersteller des ISPs vorgegeben und (sehr wahrscheinlich) nicht auf andere ISPs übertragbar.
 
 
 #### Raspberry Pico W
