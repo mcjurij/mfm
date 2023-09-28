@@ -37,7 +37,7 @@ In addition, it also outputs a 10 MHz sine wave. Since the crystal used is not a
 
 ![OCXO & Distributor box](photos/ocxo_distributor.jpeg "OCXO & Distributor box")
 
-By OCXO I mean the board on the left in the photo. The actual crystal oven, the metal box (see photo), is from CTI and used. Only the circuit board is new. There are of course better and more precise crystal ovens and circuits, but the accuracy is more than sufficient for this application. In the EEVblog forum, some people probably mentioned to have problems with the potentiometer setting, since the potentiometer was at the limit but the frequency of 10 MHz not exactly reached. I didn't have that problem.
+By OCXO I mean the board on the left in the photo. The actual crystal oven, the metal box (see photo), is from CTI and used. Only the circuit board is new. There are of course better and more precise crystal ovens and circuits, but the accuracy is more than sufficient for this application. In the EEVblog forum, some people mentioned to have problems with the potentiometer setting, since the potentiometer was at the limit but the frequency of 10 MHz not exactly reached. I didn't have that problem.
 
 
 The distributor is on the right in the photo and is simply a circuit with logic gates that double the corresponding signals. The 1PPS signal gets its voltage increased to 3.3 V.
@@ -62,7 +62,7 @@ In addition to the TTL output, the OCXO also has an “OUT-Sine” sine output. 
 
 The Counters are identical except for two small differences. Both have a front and a back end. The separation is where the opto-isolators are. The ground of the +/-5 V supply voltages is coupled to the mains voltage in the front end. The mains voltage is separated by the opto-isolators. That's why there are two grounds GND (front end) and GND_2 (back end) and two power supplies.
 
-The Counters do not necessarily have to be connected to 230 V. It is also possible with a plug-in power supply, which has outputs AC voltage of approx. 8 - 10 V. This must be connected to D1 (suppressor diode, also TVS diode). R1, the varistor RVAR1 and the fuse F1 are then omitted. But then you need a solution for the symmetrical +/-5V supply to the front end. More effort --although mandatory for everyone without an isolating transformer. Especially if you want to measure with a scope on the front end side.
+The Counters do not necessarily have to be connected to 230 V. It is also possible with a plug-in power supply, which outputs an AC voltage of approx. 8 - 10 V. This must be connected to D1 (suppressor diode, also TVS diode). R1, the varistor RVAR1 and the fuse F1 are then omitted. But then you need a solution for the symmetrical +/-5V supply for the front end. More effort --although mandatory for everyone without an isolating transformer. Especially if you want to measure with a scope on the front end side.
 
 
 Counter 1:
@@ -124,7 +124,7 @@ The colors are specified by the ISP manufacturer and (very likely) cannot be tra
 
 #### Raspberry Pico W
 
-he Raspberry Pico W (actually Raspberry Pi Pico W) is quite new. It is based on the RP2040 MCU developed by Raspberry Pi, a dual ARM Cortex M0+ chip. Clocked at 133 MHz.
+The Raspberry Pico W (actually Raspberry Pi Pico W) is quite new. It is based on the RP2040 MCU developed by Raspberry Pi, a dual ARM Cortex M0+ chip. Clocked at 133 MHz.
 https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html#raspberry-pi-pico-w
 
 I use it mainly because it has WiFi, a well-documented API, and a low price.
