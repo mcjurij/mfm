@@ -81,6 +81,13 @@ Auf einem Linux PC läuft der mfm_server, der die Daten die über Wlan von den P
 
 Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf dem Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehreren Stunden oder Tagen). Der Pico W läuft dann aber noch.
 
+Nach dem Start des Pico Ws wird erst versucht sich mit dem Wlan zu verbinden (die SSID und das Passwort wird wie grade gezeigt beim cmake Aufruf mit übergeben), gelingt das wird eine Zeitsynchronisation mit dem Linux PC durchgeführt. Danach werden die Zeitstempel vom ATmega gelesen. Wenn nichts "ungewöhnliches" passiert wird etwa alle 4 Sekunden
+
+```
+Interrupt handler count msg: XXX
+```
+ausgegeben. Wobei XXX die Anzahl der bereits verarbeiteten Zeitstempel ist.
+
 
 #### mfm_server
 
