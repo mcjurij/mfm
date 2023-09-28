@@ -144,7 +144,7 @@ Die Zeit auf der x-Achse ist immer die lokale Zeit.
 
 ### Incidents
 
-Wenn der Pico W die Zeitstempel vom ATmega auswertet kann es passieren das Auffälligkeiten festgestellt werden. Dies für dann zu einem Incident. Ob ein Incident vorliegt wird ab hier geprüft:
+Wenn der Pico W die Zeitstempel vom ATmega auswertet kann es passieren das Auffälligkeiten festgestellt werden. Dies führt dann zu einem Incident. Ob ein Incident vorliegt wird ab hier geprüft:
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L476
 
 Es kann mehrere Incidents durch eine Messung geben.
@@ -152,18 +152,18 @@ Es kann mehrere Incidents durch eine Messung geben.
 
 #### ERROR: measurement failed
 
-https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L481C23-L481C32
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L481
 
 Komplette Messung fehlgeschlagen.
 
 #### ERROR: rise measurement failed
 
-https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L498C39-L498C70
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L498
 
 Messung der steigenden Flanken fehlgeschlagen.
 
 #### ERROR: fall measurement failed
-https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L513C39-L513C69
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L513
 
 Messung der fallenden Flanken fehlgeschlagen.
 
@@ -175,7 +175,7 @@ Netzfrequenz unter 49.9 Hz.
 
 #### NOTE: mains frequency of %.4f Hz too high
 
-https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L544C43-L544C84
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L544
 
 Netzfrequenz über 50.1 Hz.
 
@@ -205,7 +205,7 @@ Die Standardabweichung der Messung mit fallenden Flanken ist zu gross.
 
 #### ERROR: %d erratic diff(s)
 
-https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L634C43-L634C68
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L634
 
 Falsche Differenzen (im Code diffs genannt). Differenzen sind die Zeit zwischen zwei entweder steigenden oder fallenden Flanken.
 
