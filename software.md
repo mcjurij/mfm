@@ -133,7 +133,7 @@ Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` gesch
 
 Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut. Implementation siehe  https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553 
 
-Der mfm_server hat ein Log-File `log.txt`. Dort finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents.
+Im mfm_server Log-File `log.txt` finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents. finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents.
 
 Zu Incidents schreibe ich weiter unten was.
 
@@ -151,7 +151,7 @@ den mfm_server so, dass statt 0 15,23 Sekunden als Netzzeitoffset zum Zeitpunkt 
 
 #### mfm_bwatcher
 
-Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3.
+Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3 mit Qt Creator.
 Zum Konfigurieren des Projekts auf File->Open File or Project gehen, dann `mfm_bwatcher.pro` laden, dann bei "Configure Project" nur "Desktop ..." auswählen, und auf "Configure Project" Button klicken. Dann unten links auf das grüne Dreieck "Run" clicken. Damit wird gebaut und die mfm_bwatcher GUI gestartet.
 
 Der mfm_bwatcher versteht nur die Dateien die eine us-Epoch Zeit haben (wie zB `meas_data_E661A4D41770802F_2023-09-25.txt`), nicht die mit lokaler Zeit (wie zB `meas_data_local_E661A4D41770802F_2023-09-25.txt`). Die mit lokaler Zeit sind für andere Plotter wie zB gnuplot gedacht. Die Datei für die Netzzeit (zB `gridtime_2023-09-25.txt` siehe oben), darf nur die Epoch in der ersten Spalte haben.

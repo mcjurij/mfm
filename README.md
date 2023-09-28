@@ -1,6 +1,8 @@
 # mfm
 Mains Frequency Measurement
 
+English: [English version](README_en.md)
+
 Ziel des Projektes ist eine möglichst genaue Messung der Netzfrequenz.
 
 * Dies ist ein reines Spassprojekt,

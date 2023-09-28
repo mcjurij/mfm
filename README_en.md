@@ -12,15 +12,15 @@ In my case, “Linux PC” means a Fedora (currently Fedora 37). But the distro 
 
 ## About the two basic ways to measure frequencies
 
-1. You can open a gate for an exact time (e.g. exactly 1 second) and then count how many pulses, detected at a trigger threshold, were detected during this time. This is the "classic" frequency counting. This works excellently at high frequencies.
+1. You can open a gate for an exact time (e.g. exactly 1 second) and then count how many pulses were detected during this time. This is the "classic" frequency counting. This works excellently at high frequencies.
 
-2. You can wait until the trigger is reached, then wait fot the trigger to trigger again and determine the time difference between the two trigger events. In order to achieve high accuracy, this is done over a longer period of time, i.e. over several periods of the input signal.
+2. You can wait until the trigger is reached, then wait for the trigger to trigger again and determine the time difference between the two trigger events. In order to achieve high accuracy, this is done over a longer period of time, i.e. over several periods of the input signal.
 
 
 
 For an exact measurement of a frequency of around 50 Hz, i.e. a very low frequency, with an accuracy of at least +/ 1mHz or rather better, method #2 is obviously the only suitable choice. With method #1 you would have to measure for a very long time in order to see enough pulses.
 
-However, method #2 has a disadvantage. If you always want to measure the same number of periods, which I do, because 50 periods are always measured, then the measurement DURATION depends on the measurement VALUE. At a frequency above 50 Hz the measurement is shorter than one second. If measured below 50 Hz, longer. This is important to mention because many mathematical methods assume equidistant values. And the calculation of the grid time also requires measurements ​​every second.
+However, method #2 has a disadvantage. If you always want to measure the same number of periods, which I do, because 50 periods are always measured, then the measurement DURATION depends on the measurement VALUE. At a frequency above 50 Hz the measurement is shorter than one second. At a frequency below 50 Hz, longer. This is important to mention because many mathematical methods assume equidistant values. And the calculation of the grid time also requires measurements ​​every second.
 
 ## About crystals
 
