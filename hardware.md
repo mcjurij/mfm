@@ -36,7 +36,8 @@ Zusätzlich gibt er auch einen 10 Mhz Sinus aus. Da der benutzte Quarz kein OXCO
 
 Mit OCXO meine ich die Platine links im Bild.  Der eigentliche Quarzofen, die Metallkiste (siehe Photo), ist von CTI und gebraucht. Nur die Platine ist neu. Es gibt natürlich bessere und genauere Quarzöfen und Beschaltungen aber für diese Anwendung ist die Genauigkeit mehr als ausreichend. Im EEVblog Forum hat wohl der ein oder andere Probleme mit der Einstellung über das Poti, da das Poti am Anschlag ist aber die Frequenz von 10 Mhz nicht genau erreicht wird. Ich hatte das Problem nicht. 
 
-Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgattern, die die entspr. Signale verstärken.
+Der Distributor ist rechts im Bild und einfach nur eine Schaltung mit Logikgattern, die die entspr. Signale verdoppeln. Beim 1PPS wird noch die Spannung auf 3,3 V angehoben.
+Schematic `hardware/distributor/counter_distributor.kicad_sch`.
 ![Distributor](hardware/distributor/distributor.png "Distributor")
 
 Der Distributor hat 2 Ein- und 4 Ausgänge. 10 Mhz TTL auf 2x 10 Mhz TTL als Clock für die ATmegas. 1PPS auf 2x 1PPS.
