@@ -645,7 +645,7 @@ static void write_merge( merge_data_t *md, time_t time, double freq)
 
             for( int i = 0; i < md->merge_window[ 0 ].freq_count; i++)
                 if( fabs( avg - md->merge_window[ 0 ].freq[i] ) > md->max_allowed_difference )
-                    slog( "SYSTEM WARNING: during merge: difference of %.5f out of allowed range\n", avg - md->merge_window[ 0 ].freq[i]);
+                    slog( "WARNING: during merge: difference of %.5f out of allowed range\n", avg - md->merge_window[ 0 ].freq[i]);
             
             int fidx = rotate_file( conv2us( md->merge_window[ 0 ].time ), md->file_meas_id);
             file_mgr_fprintf( fidx, "%ld  %.6f\n", conv2us( md->merge_window[ 0 ].time ), avg);
@@ -687,7 +687,7 @@ static void write_merge( merge_data_t *md, time_t time, double freq)
 
             for( int i = 0; i < md->merge_window[ n ].freq_count; i++)
                 if( fabs( avg - md->merge_window[ n ].freq[i] ) > md->max_allowed_difference )
-                    slog( "SYSTEM WARNING: during merge: difference of %.5f out of allowed range\n", avg - md->merge_window[ n ].freq[i]);
+                    slog( "WARNING: during merge: difference of %.5f out of allowed range\n", avg - md->merge_window[ n ].freq[i]);
             
             int fidx = rotate_file( conv2us( md->merge_window[ n ].time ), md->file_meas_id);
             file_mgr_fprintf( fidx, "%ld  %.6f\n", conv2us( md->merge_window[ n ].time ), avg);
