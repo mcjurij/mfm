@@ -190,13 +190,15 @@ Messung der fallenden Flanken fehlgeschlagen.
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L530
 
-Netzfrequenz unter 49.9 Hz.
+Netzfrequenz unter 49.9 Hz. Kann mit https://github.com/mcjurij/mfm/blob/f84038333c263206020d84a0b6d88ab9bdeef04e/embedded/Pico_W/mfm/conf.h#L15
+gesetzt werden.
 
 #### NOTE: mains frequency of %.4f Hz too high
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L544
 
-Netzfrequenz über 50.1 Hz.
+Netzfrequenz über 50.1 Hz. Kann mit https://github.com/mcjurij/mfm/blob/f84038333c263206020d84a0b6d88ab9bdeef04e/embedded/Pico_W/mfm/conf.h#L16
+gesetzt werden.
 
 #### ERROR: rise vs fall deviation of %.4f%% too large
 
