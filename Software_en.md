@@ -31,7 +31,7 @@ I don't use any OS. The programmer determines what should run on the two cores o
 The WiFi chip uses interrupts that are wired to Core0 and therefore the WiFi code can only run on core0.
 
 In order to determine an exact time, the Pico W fetches the time from mfm_server when it starts. This returns the time of the host computer, which is inaccurate, but is not a problem as long as it is accurate enough to determine the correct second (the host computer usually gets its time via NTP. The method depends on the network latency). This is now compared with the 1PPS signal and this gives you a very precise time.
-I don't use the Pico's clock (RTC). The Pico's standard crystal requires permanent time correction, no matter how you do it. The Pico has a counter that counts microseconds once started. To this value I add the microseconds since January 1, 1970 0:00. An interrupt routine that is linked to the 1PPS signal checks every second how many microseconds the counter needs to be corrected (+ microseconds since January 1, 1970 0:00 a.m.).
+I don't use the Pico's clock (RTC). The Pico's standard crystal requires permanent time correction, no matter how you do it. The Pico has a counter that counts microseconds once started. To this value I add the microseconds since January 1, 1970 midnight (UTC). An interrupt routine that is linked to the 1PPS signal checks every second how many microseconds the counter needs to be corrected (+ microseconds since January 1, 1970 midnight (UTC)).
 Since the time stamps of the ATmega are also synchronized with the 1PPS signal, the measurement time can be determined very precisely (at least in theory). As soon as a measurement has taken place, only the information in which second the measurement was taken comes from the Pico and the microsecond (start/end of the measurement) from the ATmega. The time of the measurement is halfway between the start and end of the measurement. It is important to note that the start or end of the measurement does not have to be on a second barrier and that a measurement can be longer (or shorter) than one second.
 
 - `conf.h` - Configuration like MAINS_FREQ
@@ -101,7 +101,7 @@ The mfm_server is not (yet) a real server; it lacks so-called daemonizing, which
 
 The Picos have a unique ID, which can be queried with https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51. In the mfm_server it is used in particular to determine the file names for the Counter-related files. After a Pico W has established a connection to the mfm_server, it first sends its ID.
 
-##### Output Data
+##### Output data files
 
 In addition to mfm_server's own log file `log.txt`, various files are written and continuously appended. If a file comes from a specific Counter, the file name contains the Pico ID. In any case the current date. With an example day, I'll take 2023-09-25, this quickly becomes clear. The first column of all files there is always has a time, either in us-Epoch or Epoch. The us-Epoch refers to the microseconds since January 1, 1970 midnight (UTC, a 16-digit number). With Epoch the seconds since January 1, 1970 midnight (UTC). My Pico Ws have the IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
 
@@ -156,7 +156,7 @@ The mfm_bwatcher only understands the files that have a us-Epoch or Epoch time (
 ![Binge Watcher Follow Mode](photos/bwatcher_1.png "Binge Watcher Follow Mode")
 
 This screenshot shows the data from Counter 1: `meas_data_E661A4D41723262A_2023-09-27.txt` and `meas_sgfit_E661A4D41723262A_2023-09-27.txt`. You can see the effect of the Savitzky-Golay filter.
-In "Follow mode" the files are always read again by the mfm_server at the end and the graph is updated every second. The follow mode can be recognized by the box with the value and the arrow pointing to the right y-axis (called AxisTag in the source code).
+In "Follow mode" the files from the mfm_server are always read again at the end and the graph is updated every second. The follow mode can be recognized by the box with the value and the arrow pointing to the right y-axis (called AxisTag in the source code).
 
 ![Binge Watcher Follow Mode](photos/bwatcher_2.png "Binge Watcher Follow Mode")
 
@@ -167,10 +167,10 @@ The time on the x-axis is always local time.
 
 ### Incidents
 
-When the Pico W evaluates the time stamps from the ATmega, it can happen that abnormalities are detected. This then leads to an incident. Whether there is an incident is checked from here:
+When the Pico W evaluates the time stamps from the ATmega, it can happen that abnormalities are detected. This then leads to an incident. Whether there is an incident is checked in the source code from here on:
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L476
 
-There can be multiple incidents caused by one measurement. The main reason for the incident mechanism is that I want to be able to detect if one of the two counters provides poorer measurements over time, due to aging processes, or for whatever reason.
+There can be multiple incidents caused by one measurement. The main reason for the incident mechanism is that I want to be able to detect if a Counter delivers poorer measurements over time, due to aging processes, or for whatever reason.
 
 
 #### ERROR: measurement failed
@@ -241,10 +241,10 @@ More than 4 corrected differences. Differences must always be corrected if a tim
 
 #### Display incidents in the mfm_bwatcher
 
-For a file with measured values, for example `meas_data_<Pico ID>__<Date>.txt`, you can also load an `incidents_<Pico ID>_<Date>.txt`. With the same Pico ID and the same date. It looks like this:
+For a file with measurement values, for example `meas_data_<Pico ID>__<Date>.txt`, you can also load the matching `incidents_<Pico ID>_<Date>.txt`. With the same Pico ID and the same date. It looks like this:
 ![Binge Watcher Incidents zoom](photos/bwatcher_incid_zoom.png "Binge Watcher Incidents zoom")
 
-In order to read each incident you have to zoom in a lot along the x-axis because they overlap. Therefore the x-axis is selected and displayed in blue. Zoom with mouse wheel.
+In order to be able read each incident you have to zoom in a lot along the x-axis until they no longer overlap. Therefore the x-axis is selected and displayed in blue. Zoom with mouse wheel.
 This is a typical case of incidents that are triggered by a ripple control signal. That's probably 95% of all incidents.
 
 Showing incidents consumes a lot of CPU in mfm_bwatcher if you also go into follow mode. The widget used (QCustomPlot) is not optimized for this application.

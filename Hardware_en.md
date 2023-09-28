@@ -71,7 +71,7 @@ Counter 1:
 Counter 2:
 ![Counter 2](photos/counter_2.jpeg "Counter 2")
 
-The two are not built exactly as in the schematics. The reason for the linear regulator to the right of the IRMs is that the IRMs output is 9V. If you take the right IRM, one with 5 V at the output, this isn't needed.
+The two are not built exactly as in the schematics. The reason for the linear regulator to the right of the IRMs is because the IRMs output is 9V. If you take the right IRM, one with 5 V at the output, this isn't needed.
 
 The signal path using Counter 1, schematic `hardware/counter_atmega328p_v2/counter_mcu_2.kicad_sch`.
 ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
@@ -80,7 +80,7 @@ Front end:
 The input voltage is reduced to a fraction and clipped by the voltage divider R1, R2 and the suppressor diode D1. Then further reduced via RV2 and sent to the comparator U1. It compares the sine with a fixed value that comes via RV1. This always results in a change at the output of the comparator exactly when the mains voltage goes above or below 0V. This square wave signal is now decoupled by U3A and passed to 2 opto-isolators that separate the front from the back end.
 
 Back end:
-The signals from the 2 opto-isolators are combined into a single square wave signal by the S-R latch U4B, U4A. The ATmega only has one input capture input (pin 14). This input is used to stop the time in which the signal goes from 0->1 and from 1->0 (the source code always speaks of "rise" and "fall"). The accuracy results from the clock of the ATmega, which comes from the OCXO via the Distributor. If the mains frequency is exactly 50 Hz, the distance between two 0->1 edges, "rise", or two 1->0 edges, "fall", is exactly 200,000 cycles, with the clock of the ATmega at exactly 10 MHz. Results in 200000/(10000000 * s^-1) = 20ms = 1/(50 * s^-1) period time. The timestamps are sent to the Pico W via UART. Both MCUs are supplied with the 1PPS signal via U7E, U7F and U4D. I will describe why this is the case under Software.
+The signals from the 2 opto-isolators are combined into a single square wave signal by the S-R latch U4B, U4A. The ATmega only has one input capture input (pin 14). This input is used to stop the time in which the signal goes from 0->1 and from 1->0 (the source code always speaks of "rise" and "fall"). The accuracy results from the clock of the ATmega, which comes from the OCXO via the Distributor. If the mains frequency is exactly 50 Hz, the distance between two 0->1 edges, "rise", or two 1->0 edges, "fall", is exactly 200,000 cycles, with the clock of the ATmega at exactly 10 MHz. Results in 200000/(10000000 * s^-1) = 20ms = 1/(50 * s^-1) period time. The timestamps are sent to the Pico W via UART. Both MCUs are supplied with the 1PPS signal via U7E, U7F and U4D. I will describe why this has been done so in the software description.
 
 The LED D2 on pin 13/PD7 is on when 50 time stamps have been transferred and off for exactly that long. So about half a second on and off (exactly half a second on and off if the frequency is exactly 50 Hz). 50 0->1 and 50 1->0 timestamps are transmitted, 100 in total, making 50 periods. It doesn't tell you _when_ a measurement is taking place. This is only due to the Pico W and when it starts processing timestamps is essentially a coincidence.
 
