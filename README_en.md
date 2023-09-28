@@ -36,4 +36,4 @@ A crystal oven keeps the temperature of the crystal at a constant level. The sta
 
 [About the hardware](Hardware_en.md)
 
-[About the Software](Software_en.md)
+[About the software](Software_en.md)

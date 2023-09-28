@@ -25,7 +25,7 @@ If you can get a GPSDO with OCXO cheaply and that outputs 10 MHz at TTL level, y
 
 ### GPSDO
 
-The Cartain GPSDO is the cheapest I could find. It's working perfectly so far. It emits one pulse per second (1PPS also PPS), of approx. 2.5 Vpp. Every rising edge, marks the beginning of a new second "accurate to an atomic clock".
+The Cartain GPSDO is the cheapest I could find. It's working perfectly so far. It emits one pulse per second (1PPS also PPS), of approx. 2.5 Vpp. Every rising edge marks the beginning of a new second "accurate to an atomic clock".
 In addition, it also outputs a 10 MHz sine wave. Since the crystal used is not an OXCO, but a voltage-controlled crystal (VCXO (?)), there is quite a bit of phase noise.
 
 
