@@ -137,13 +137,13 @@ I'll write something about incidents below.
 ##### Start with grid time
 
 When starting the mfm_server, the "official" grid time from e.g. https://www.swissgrid.ch/de/home/operation/grid-data/current-data.html#wide-area-monitoring (please scroll down) can be used as a command line argument.
-The value of "Aktuelle Netzzeitabweichung:" ("current network time deviation:") is the difference between network time minus the current time.
+The value of "Aktuelle Netzzeitabweichung:" ("current grid time deviation:") is the difference between grid time minus the current time.
 
 E.g. 
 ```
 ./mfm_server 15.23
 ```
-starts the mfm_server so that instead of 0, 15.23 seconds is used as the grid time offset at the time of start. This is not perfectly accurate, as there is a pause between the start of the program and the start of our own network time calculation, but it is sufficient.
+starts the mfm_server so that instead of 0, 15.23 seconds is used as the grid time offset at the time of start. This is not perfectly accurate, as there is a pause between the start of the program and the start of our own grid time calculation, but it is sufficient.
 
 
 #### mfm_bwatcher
