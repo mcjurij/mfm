@@ -193,6 +193,12 @@ https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/emb
 
 Abweichung der Messungen für fallende und steigende Flanken ist gross.
 
+#### WARNING: %.4f is too big of a jump
+
+https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L588
+
+Sprung zwischen zwei aufeinanderfolgenden Messwerten zu gross.
+
 #### ERROR: rise diff stddev of %.2f is too high
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L603
