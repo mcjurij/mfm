@@ -18,7 +18,7 @@ Die zwei Platinen mit der Schaltung zur Netzfrequenzmessung werde ich ab jetzt C
 
 ![3 Boxes](photos/mfm_boxes.jpeg "3 Boxes")
 
-Wer günstig an einen GPSDO mit OCXO kommt, und der 10 MHz als TTL Level ausgibt, ist wohl besser beraten, den zu nehmen statt meiner Lösung. Es funktioniert dann auch nur mit einem Counter und ohne Distributor. Softwareseitig hätte das keine Anpassungen zur Folge.
+Wer günstig an einen GPSDO mit OCXO kommt, und der 10 MHz als TTL Level ausgibt, ist wohl besser beraten, den zu nehmen statt meiner Lösung. Es funktioniert dann auch nur mit einem Counter und ohne Distributor. Softwareseitig hätte das keine Anpassungen zur Folge (allerdings macht dann das Verschmelzen (merge) von Messwerten, was beim mfm_server beschrieben wird, keinen Sinn mehr, da dies zwei Counter braucht).
 
 
 ### GPSDO
