@@ -147,7 +147,9 @@ Die Zeit auf der x-Achse ist immer die lokale Zeit.
 Wenn der Pico W die Zeitstempel vom ATmega auswertet kann es passieren das Auffälligkeiten festgestellt werden. Dies führt dann zu einem Incident. Ob ein Incident vorliegt wird ab hier geprüft:
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L476
 
-Es kann mehrere Incidents durch eine Messung geben.
+Es kann mehrere Incidents durch eine Messung geben. Der Hauptgrund für den Incident Mechanismus ist, dass ich in der Lage sein will zu erkennen, ob einer der beiden Counter
+aufgrund von Alterungsprozessen, oder warum auch immer, mit der Zeit schlechtere Messungen liefert.
+
 
 
 #### ERROR: measurement failed
