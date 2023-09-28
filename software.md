@@ -33,7 +33,7 @@ Der Wlan Chip benutzt Interrupts, die mit Core0 verdrahtet sind und daher kann d
 
 Um eine genaue Zeit zur ermitteln, holt sich der Pico W periodisch die Zeit von mfm_server. Dieser gibt die Zeit des Hostrechners zurück, die ungenau ist, was kein Problem ist solange sie genau genug ist bezüglich um die richtige Sekunde zu bestimmen (der Hostrechner bekommt seine Zeit wiederum i.d.R. über NTP. Das Verfahren ist abhängig von der Netzwerklatenz). Diese wird nun mit dem 1PPS Signal abgeglichen und damit erhält man eine sehr genaue Zeit. 
 Ich benutze nicht die Uhr (RTC) des Picos. Der Standardquarz des Picos macht eine ständige Korrektur der Zeit nötig, egal wie man es macht.  Der Pico hat einen Zähler der ab Start hochzählt. Zu diesem addiere ich die Mikrosekunden seit 1.1.1970 0 Uhr.  In einer Interruptroutine, die an das 1PPS Signal gekoppelt ist, wird jede Sekunde geschaut um wieviele Mikrosekunden der Zähler (+ Mikrosekunden seit 1.1.1970 0 Uhr) korrigiert werden muss.
-Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start/Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf eine Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
+Da die Zeitstempel des ATmegas ebenfalls mit dem 1PPS Signal synchronisiert sind, kann die Messzeit (zumindest in der Theorie) sehr genau bestimmt werden. Sobald eine Messung stattgefunden hat kommt vom Pico nur die Information in welcher Sekunde die Messung war und vom ATmega die Mikrosekunde (Start/Ende der Messung).  Dabei ist es wichtig zu beachten, dass der Start oder das Ende der Messung nicht auf einer Sekundengrenze liegen müssen und dass eine Messung länger (oder kürzer) als eine Sekunde sein kann.
 
 - `conf.h` - Konfiguration wie MAINS_FREQ
 - `freq.c` - Empfängt Zeitstempel vom ATmega und berechnet daraus Frequenz. Läuft auf Core1.
@@ -71,7 +71,7 @@ cmake -DPICO_BOARD=pico_w -DWIFI_SSID="<your SSID>" -DWIFI_PASSWORD="<your passw
 Das sollte zu diesen Ausgaben führen. Ich habe meine Pfade hier geschwärzt.
 ![cmake Ausgabe](photos/cmake_run.png "cmake")
 
-Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/build/mfm/mfm_pico_w.uf2`  (747 kb).
+Zum Bauen `make -j9`. Die UF2 Datei zum flashen ist unter `embedded/Pico_W/build/mfm/mfm_pico_w.uf2`  (747 kb).
 
 
 
@@ -79,7 +79,7 @@ Zum Bauen `make -j9`.  Die UF2 Datei zum flashen ist unter `embedded/Pico_W/buil
 
 Auf einem Linux PC läuft der mfm_server, der die Daten die über Wlan von den Pico Ws kommen annimmt, weiterverarbeitet und in Dateien schreibt. Diese können von einer GUI, dem "Binge Watcher" bzw mfm_bwatcher, gelesen werden. 
 
-Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf dem Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehrere Stunden oder Tagen). Der Pico W läuft dann aber noch.
+Die Ausgaben, die mit printf() gemacht werden, werden über USB übertragen. Dazu auf dem Linux PC `minicom -C minicom.log -b 115200 -o -D /dev/ttyACM0` eingeben, nachdem der Pico W gestartet wurde. Die Übertragung der Ausgaben über USB hängt sich bei mir manchmal auf (nach mehreren Stunden oder Tagen). Der Pico W läuft dann aber noch.
 
 
 #### mfm_server
@@ -218,7 +218,7 @@ Mehr als 4 korrigierte Differenzen. Differenzen müssen immer dann korrigiert we
 
 #### Anzeigen von Incidents im mfm_bwatcher
 
-Zu einer Datei mit Messwerten zB `meas_data_<Pico ID>__<Date>.txt` kann man auch eine `incidents_<Pico ID>_<Date>.txt` dazu laden. Mit gleicher Pico ID und gleiches Datum. Das sieht dann zB so aus:
+Zu einer Datei mit Messwerten zB `meas_data_<Pico ID>__<Date>.txt` kann man auch eine `incidents_<Pico ID>_<Date>.txt` dazu laden. Mit gleicher Pico ID und gleichem Datum. Das sieht dann zB so aus:
 
 ![Binge Watcher Incidents zoom](photos/bwatcher_incid_zoom.png "Binge Watcher Incidents zoom")
 
