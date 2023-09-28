@@ -183,13 +183,13 @@ Netzfrequenz über 50.1 Hz.
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L559
 
-Abweichung der Messungen für fallende und steigende Flanken zu gross.
+Abweichung der Messungen für fallende und steigende Flanken ist zu gross.
 
 #### WARNING: rise vs fall deviation of %.4f%% large
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L573
 
-Abweichung der Messungen für fallende und steigende Flanken zu gross.
+Abweichung der Messungen für fallende und steigende Flanken ist gross.
 
 #### ERROR: rise diff stddev of %.2f is too high
 
@@ -218,7 +218,7 @@ Mehr als 4 korrigierte Differenzen. Differenzen müssen immer dann korrigiert we
 
 #### Anzeigen von Incidents im mfm_bwatcher
 
-Zu einer Datei mit Messwerten zB `meas_data_<Pico ID>__<Date>.txt' kann man auch eine `incidents_<Pico ID>_<Date>.txt` dazu laden. Gleiche Pico ID und gleiches Datum. Das sieht dann zB so aus:
+Zu einer Datei mit Messwerten zB `meas_data_<Pico ID>__<Date>.txt` kann man auch eine `incidents_<Pico ID>_<Date>.txt` dazu laden. Mit gleicher Pico ID und gleiches Datum. Das sieht dann zB so aus:
 
 ![Binge Watcher Incidents zoom](photos/bwatcher_incid_zoom.png "Binge Watcher Incidents zoom")
 
