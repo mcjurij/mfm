@@ -110,14 +110,14 @@ Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mf
 |`meas_sgfit_local_E661A4D41770802F_2023-09-25.txt`|Messwerte von Counter 1 mit lokaler Zeit, mit Interpolation & Savitzky-Golay Filter|
 |`meas_merge_2023-09-25.txt`|Verschmolzene Messwerte von Counter 1 & 2 mit us-Epoch Zeit, mit Interpolation|
 |`meas_merge_sgfit_2023-09-25.txt`|Verschmolzene Messwerte von Counter 1 & 2 mit us-Epoch Zeit, mit Interpolation & Savitzky-Golay Filter|
-|`gridtime_2023-09-25.txt`|Netzzeit mit us-Epoch Zeit|
+|`gridtime_2023-09-25.txt`|Netzzeit mit Epoch Zeit|
 |`gridtime_local_2023-09-25.txt`|Netzzeit mit lokaler Zeit|
 |`incidents_E661A4D41723262A_2023-09-25.txt`|Incidents von Counter 1|
 |`incidents_E661A4D41770802F_2023-09-25.txt`|Incidents von Counter 2|
 
 Die Interpolation ist einfach zwischen zwei Messwerten linear interpoliert, und zwar so, dass man einen Wert pro Sekunde erhält. Der Savitzky-Golay Filter kann (in dieser Form) nur mit äquidistanten Werten arbeiten. Bei `meas_merge_*` wird der Mittelwert aus den beiden Interpolationen von Counter 1 und 2 genommen. Bei `meas_merge_sgfit_*` wird für Counter 1 & 2 jeweils erst interpoliert, dann jeweils der Savitzky-Golay Filter angewendet und danach der Mittelwert von diesen beiden Werten genommen.
 
-Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden.
+Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden. In `gridtime_2023-09-25.txt` steht die Epoch Zeit in der ersten Spalte. Das sind die Sekunden seit dem 1.1.1970 0 Uhr.
 
 Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut. Implementation siehe  https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553 
 
@@ -129,6 +129,7 @@ Der mfm_server hat ein Log-File `log.txt`. Dort finden sich verschiedene Dinge: 
 Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3.
 Zum Konfigurieren des Projekts auf File->Open File or Project gehen, dann `mfm_bwatcher.pro` laden, dann bei "Configure Project" nur "Desktop ..." auswählen, und auf "Configure Project" Button klicken. Dann unten links auf das grüne Dreieck "Run" clicken. Damit wird gebaut und die mfm_bwatcher GUI gestartet.
 
+Der mfm_bwatcher versteht nur die Dateien die eine us-Epoch Zeit haben (wie zB `meas_data_E661A4D41770802F_2023-09-25.txt`), nicht die mit lokaler Zeit (wie zB `meas_data_local_E661A4D41770802F_2023-09-25.txt`). Die mit lokaler Zeit sind für andere Plotter wie zB gnuplot gedacht. Die Datei für die Netzzeit (zB `gridtime_2023-09-25.txt` siehe oben), darf nur die Epoch in der ersten Spalte haben.
 
 ![Binge Watcher Follow Mode](photos/bwatcher_1.png "Binge Watcher Follow Mode")
 Dieser Screenshot zeigt die Daten von Counter 1: `meas_data_E661A4D41723262A_2023-09-27.txt` und `meas_sgfit_E661A4D41723262A_2023-09-27.txt`. Man sieht den Effekt des Savitzky-Golay Filters.
