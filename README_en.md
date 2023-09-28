@@ -1,6 +1,9 @@
 # mfm
 Mains Frequency Measurement
 
+> [!NOTE]
+> Note that this translation is mostly a google translate jobby, with my improvements. It is a bit bumpy I guess, but I think it should be clear. If you have language improvements, please let me know.
+
 The aim of the project is to measure the mains frequency accurately.
 
 * This is purely a fun project,
@@ -8,8 +11,6 @@ The aim of the project is to measure the mains frequency accurately.
 * some of my design decisions may therefore be suboptimal. :-)
 
 In my case, “Linux PC” means a Fedora (currently Fedora 37). But the distro used doesn't matter.
-
-Note that this translation is mostly a google translate jobby, with my improvements. It is a bit bumpy I guess, but I think it should be clear. If you have language improvements, please let me know.
 
 
 ## About the two basic ways to measure frequencies

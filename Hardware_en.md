@@ -25,7 +25,7 @@ If you can get a GPSDO with OCXO cheaply and that outputs 10 MHz at TTL level, y
 
 ### GPSDO
 
-The Cartain GPSDO is the cheapest I could find. It's working perfectly so far. It emits one pulse per second (1PPS also PPS), of approx. 2.5 Vpp. With every rising edge, marks the beginning of a new second "accurate to an atomic clock".
+The Cartain GPSDO is the cheapest I could find. It's working perfectly so far. It emits one pulse per second (1PPS also PPS), of approx. 2.5 Vpp. Every rising edge, marks the beginning of a new second "accurate to an atomic clock".
 In addition, it also outputs a 10 MHz sine wave. Since the crystal used is not an OXCO, but a voltage-controlled crystal (VCXO (?)), there is quite a bit of phase noise.
 
 
@@ -71,7 +71,7 @@ Counter 1:
 Counter 2:
 ![Counter 2](photos/counter_2.jpeg "Counter 2")
 
-The two are not built exactly as in the schematics. The reason for the linear regulator to the right of the IRMs is because the IRMs output is 9V. If you take the right IRM, one with 5 V at the output, this isn't needed.
+The two are not built exactly as in the schematics. The reason for the linear regulator to the right of the IRMs is because the IRMs output is 9V. If you take the right IRM, one with a 5 V output, this isn't needed.
 
 The signal path using Counter 1, schematic `hardware/counter_atmega328p_v2/counter_mcu_2.kicad_sch`.
 ![Counter ATmega328p v2](hardware/counter_atmega328p_v2/counter_atmega328p_v2.png "Counter ATmega328p v2")
