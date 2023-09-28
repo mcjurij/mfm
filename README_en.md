@@ -14,9 +14,9 @@ Note that this translation is mostly a google translate jobby, with my improveme
 
 ## About the two basic ways to measure frequencies
 
-1. You can open a gate for an exact time (e.g. exactly 1 second) and then count how many pulses were detected during this time. This is the "classic" frequency counting. This works excellently at high frequencies.
+#1 You can open a gate for an exact time (e.g. exactly 1 second) and then count how many pulses were detected during this time. This is the "classic" frequency counting. This works excellently at high frequencies.
 
-2. You can wait until the trigger is reached, then wait for the trigger to trigger again and determine the time difference between the two trigger events. In order to achieve high accuracy, this is done over a longer period of time, i.e. over several periods of the input signal.
+#2 You can wait until the trigger is reached, then wait for the trigger to trigger again and determine the time difference between the two trigger events. In order to achieve high accuracy, this is done over a longer period of time, i.e. over several periods of the input signal.
 
 
 
