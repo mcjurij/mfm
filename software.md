@@ -125,6 +125,18 @@ Der mfm_server hat ein Log-File `log.txt`. Dort finden sich verschiedene Dinge: 
 
 Zu Incidents schreibe ich weiter unten was.
 
+##### Starten mit Netzzeit
+
+Beim Start des mfm_server kann die "offizielle" Netzzeit von zB https://www.swissgrid.ch/de/home/operation/grid-data/current-data.html#wide-area-monitoring (nach unten scrollen) als Kommandozeilenargument übergeben werden.
+Der Wert von "Aktuelle Netzzeitabweichung:" ist die Differenz zwischen Netzzeit minus aktueller Uhrzeit.
+
+Z.B. startet
+```
+./mfm_server 15.23
+```
+den mfm_server so, dass statt 0 15.23 Sekunden als Netzzeitoffset zum Zeitpunkt des Starts genommen wird. Das ist nicht perfekt genau, da zwischen dem Start des Programms und dem Start der eigenen Netzzeitberechnung eine Pause ist, aber ausreichend.
+
+
 #### mfm_bwatcher
 
 Ein einfaches Tool zur graphischen Ausgabe der Daten, ähnlich einem Funktionsplotter, aber mit ein paar speziellen Features für diese Anwendung. Es muss Qt 6 installiert sein. Aktuell benutze ich Qt 6.4.3.
