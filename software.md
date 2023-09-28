@@ -95,7 +95,12 @@ Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, d
 - `proto.c` - Protokoll-definition, exakte Kopie der Datei im embedded/Pico_W/mfm Verzeichnis.
 - `server.c`- Enhält main(), nimmt Netzwerkverbingen an und startet pro Pico W einen Thread.
 
-Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. Nachdem ein Pico W eine Verbindung zum mfm_server aufgebaut hat sendet er als erstes seine ID. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar. Mit us-Epoch sind die Mikrosekunden seit dem 1.1.1970 0 Uhr gemeint (eine 16-stellige Zahl). Meine Pico Ws haben die IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
+Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. Nachdem ein Pico W eine Verbindung zum mfm_server aufgebaut hat sendet er als erstes seine ID.
+
+
+##### Ausgabedaten
+
+Neben dem mfm_server eigenem Logfile `log.txt` werden diverse Dateien geschrieben, an die laufend angehängt wird. Kommt eine Datei von einem bestimmten Counter enthält der Dateiname die Pico ID. In jedem Fall das aktuelle Datum. An einem Beispieltag, ich nehme den 2023-09-25, wird das schnell klar. In der ersten Spalte in allen Dateien ist immer eine Zeit, entweder in us-Epoch oder Epoch. Mit us-Epoch sind die Mikrosekunden seit dem 1.1.1970 0 Uhr gemeint (eine 16-stellige Zahl). Mit Epoch die Sekunden seit dem 1.1.1970 0 Uhr. Meine Pico Ws haben die IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
 
 
 | Dateiname                                | Inhalt        |
@@ -134,7 +139,7 @@ Z.B. startet
 ```
 ./mfm_server 15.23
 ```
-den mfm_server so, dass statt 0 15.23 Sekunden als Netzzeitoffset zum Zeitpunkt des Starts genommen wird. Das ist nicht perfekt genau, da zwischen dem Start des Programms und dem Start der eigenen Netzzeitberechnung eine Pause ist, aber ausreichend.
+den mfm_server so, dass statt 0 15,23 Sekunden als Netzzeitoffset zum Zeitpunkt des Starts genommen wird. Das ist nicht perfekt genau, da zwischen dem Start des Programms und dem Start der eigenen Netzzeitberechnung eine Pause ist, aber ausreichend.
 
 
 #### mfm_bwatcher
