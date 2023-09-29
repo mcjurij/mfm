@@ -174,21 +174,21 @@ The time on the x-axis is always local time.
 
 Graphs can be deleted with a right click, after clicking on the graph or picking one in the legend.
 
-When loading grid time you may have to zoom out along the y-Axis to see anything.
+After loading grid time file you may have to zoom out along the y-Axis to see anything.
 
-- View->Follow mode - switches to follow mode with the actual time range (see line with "Range:" at the bottom left).
+- View->Follow mode - switches to follow mode with the current time range (see line with "Range:" at the bottom left).
 - View->Follow mode 5 mins - switches to follow mode with a 5 min time range.
 - View->Follow mode 15 mins - switches to follow mode with a 15 min time range.
 - View->Go to... - here you can jump to any point in time and set the time range in minutes.
 - View->Jump to PoI - here you can jump to the first, last, previous, next point of interest (PoI).
 
-Points of interest are currently only frequencies above 50.1 or below 49.9. These are searched when reading the first `meas_*` file. Or for the first graph if several are displayed and you select
+Points of interest are found currently only when the mains frequency goes above 50.1 or below 49.9 Hz. They are searched when reading the first `meas_*` file. Or for the first graph if several are displayed and you select
 
 - Analyze->Find PoIs in measurement #1
 
-They are also searched when you remove the first graph in the list of graohs.
+They are also searched when you remove the first graph in the list of graphs.
 
-- Help->Interactions - short explanation.
+- Help->Interactions - short explanation of mouse interactions.
 - Help->About Qt - Qt's standard dialog "About Qt".
 
 
@@ -258,13 +258,13 @@ The standard deviation of the measurement with falling edges is too large.
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L634
 
-Erratic differences (called diffs in the code). Differences are the time between two either rising or falling edges.
+Erratic differences (called diffs in the code). Diffs are the time between either two rising or two falling edges.
 
 #### WARNING: %d corrected diffs
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L650
 
-More than 4 corrected differences. Differences must always be corrected if a time stamp was determined on the ATmega side that had not yet noticed the last overflow of the counter register.
+More than 4 corrected differences. Differences must always be corrected if a time stamp was determined on the ATmega side that needs the last overflow of the counter register added to it. This is a save operation since we can clearly distinguish an erratic diff from one that needs one counter overflow added to it.
 
 #### Display incidents in the mfm_bwatcher
 
@@ -274,4 +274,4 @@ For a file with measurement values, for example `meas_data_<Pico ID>__<Date>.txt
 In order to be able read each incident you have to zoom in a lot along the x-axis until they no longer overlap. Therefore the x-axis is selected and displayed in blue. Zoom with mouse wheel.
 This is a typical case of incidents that are triggered by a ripple control signal. That's probably 95% of all incidents.
 
-Showing incidents consumes a lot of CPU in mfm_bwatcher if you also go into follow mode. The widget used (QCustomPlot) is not optimized for this application.
+Showing incidents consumes a lot of CPU in mfm_bwatcher, once you go into follow mode. The widget used (QCustomPlot) is not optimized for this kind of application.

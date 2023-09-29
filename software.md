@@ -273,7 +273,7 @@ Falsche Differenzen (im Code diffs genannt). Differenzen sind die Zeit zwischen 
 
 https://github.com/mcjurij/mfm/blob/bba71c24176cf02726d72ed47665e61a6f7a76e6/embedded/Pico_W/mfm/freq.c#L650
 
-Mehr als 4 korrigierte Differenzen. Differenzen müssen immer dann korrigiert werden, wenn auf ATmega Seite ein Zeitstempel bestimmt wurde der den letzten Überlauf des Zählerregisters noch nicht mitbekommen hatte.
+Mehr als 4 korrigierte Differenzen. Differenzen müssen immer dann korrigiert werden, wenn auf ATmega Seite ein Zeitstempel bestimmt wurde der den letzten Überlauf des Zählerregisters noch nicht mitbekommen hatte. Da man immer sicher sagen kann, ob es sich um eine falsche Differenz oder eine wo ein Überlauf hinzuaddiert werden muss handelt, ist diese Korrektur sicher.
 
 
 #### Anzeigen von Incidents im mfm_bwatcher

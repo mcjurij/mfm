@@ -10,7 +10,7 @@ The aim of the project is to measure the mains frequency accurately.
 * I don't earn my money from hardware development or embedded programming,
 * some of my design decisions may therefore be suboptimal. :-)
 
-In my case, “Linux PC” means a Fedora (currently Fedora 37). But the distro used doesn't matter.
+In my case, “Linux PC” is a Fedora (currently Fedora 37). But the distro doesn't matter.
 
 
 ## About the two basic ways to measure frequencies
