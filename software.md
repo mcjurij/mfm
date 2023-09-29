@@ -129,7 +129,7 @@ Neben dem mfm_server eigenem Logfile `log.txt` werden diverse Dateien geschriebe
 
 Die Interpolation ist einfach zwischen zwei Messwerten linear interpoliert, und zwar so, dass man einen Wert pro Sekunde erhält. Der Savitzky-Golay Filter kann (in dieser Form) nur mit äquidistanten Werten arbeiten. Bei `meas_merge_*` wird der Mittelwert aus den beiden Interpolationen von Counter 1 und 2 genommen. Bei `meas_merge_sgfit_*` wird für Counter 1 & 2 jeweils erst interpoliert, dann jeweils der Savitzky-Golay Filter angewendet und danach der Mittelwert von diesen beiden Werten genommen.
 
-Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden. In `gridtime_2023-09-25.txt` steht die Epoch Zeit in der ersten Spalte. Das sind die Sekunden seit dem 1.1.1970 0 Uhr.
+Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden. In `gridtime_2023-09-25.txt` steht die Epoch Zeit in der ersten Spalte. Das sind die Sekunden seit dem 1.1.1970 0 Uhr. In der zweiten Spalte steht der Netzzeitoffset.
 
 Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut. Implementation siehe  https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553 
 
@@ -164,6 +164,32 @@ Im "Follow mode" werden die Dateien vom mfm_server immer am Ende neu gelesen und
 Dieser Screenshot zeigt die Daten von Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` und Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. Die beiden Kurven liegen sehr genau übereinander, da die Savitzky-Golay Filter die Unterschiede fast komplett weg-smoothen. Wobei man dazu sagen muss, dass die Unterschiede der Messungen von Counter 1 und 2 eh sehr klein sind und nur bei Rundsteuersignalen wirklich relevant sind.
 
 Die Zeit auf der x-Achse ist immer die lokale Zeit.
+
+#### Menüstruktur
+
+- File->Read measurements - einlesen aller Dateien die mit 'meas_*` beginnen ausser die mit lokaler Zeit.
+- File->Read grid time - einlesen des Netzzeitoffsets `gridtime_*`, aber nicht mit lokaler Zeit.
+- File->Read incidents - einlesen der Incidents, müssen zu der gewählten `meas_*` Datei passen.
+- File->Remove incidents - entfernen der Incidents.
+- File->Quit - verlassen des Programms.
+
+Graphen können mit Rechtsklick gelöscht werden, entweder in dem man auf den graph clickt oder einen in der Legende auswählt.
+Wenn man eine Netzzeitdatei läd kann es sein, dass man entlang der y-Achse rauszoomen muss um etwas zu sehen.
+
+- View->Follow mode - geht in den follow mode mit atkueller Zeitspanne (siehe Zeile mit "Range:" unten links).
+- View->Follow mode 5 mins - geht in den follow mode mit 5 Min Zeitspanne
+- View->Follow mode 15 mins - geht in den follow mode mit 15 Min Zeitspanne
+- View->Go to... - hier kann man einen Sprung an eine beliebige Stelle machen und die Zeitspanne in Minuten setzen.
+- View->Jump to PoI - hier kann man einen Sprung an den ersten, letzten, vorherigen, nächsten Point of Interest machen.
+
+Point of Interests sind aktuell nur Frequenzen von über 50.1 oder unter 49.9. Diese werden beim lesen der ersten `meas_*` Datei gesucht. Oder für den ersten Graph, wenn mehrere angezeigt werden, wenn man auf
+
+- Analyze->Find PoIs in measurement #1
+
+geht. PoIs werden auch gesucht wenn man den ersten Graph in der Liste der Graphen löscht.
+
+- Help->Interactions - kurze Erklärung.
+- Help->About Qt - Qt Standarddialog "About Qt".
 
 
 ### Incidents

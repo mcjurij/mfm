@@ -103,7 +103,7 @@ The Picos have a unique ID, which can be queried with https://github.com/mcjurij
 
 ##### Output data files
 
-In addition to mfm_server's own log file `log.txt`, various files are written and continuously appended. If a file comes from a specific Counter, the file name contains the Pico ID. In any case the current date. With an example day, I'll take 2023-09-25, this quickly becomes clear. The first column of all files there is always has a time, either in us-Epoch or Epoch. The us-Epoch refers to the microseconds since January 1, 1970 midnight (UTC, a 16-digit number). With Epoch the seconds since January 1, 1970 midnight (UTC). My Pico Ws have the IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
+In addition to mfm_server's own log file `log.txt`, various files are written and continuously appended. If a file comes from a specific Counter, the file name contains the Pico ID. In any case the current date. With an example day, I'll take 2023-09-25, this quickly becomes clear. The first column of all files there is always has a time, either in us-Epoch or Epoch. The us-Epoch are microseconds since January 1, 1970 midnight (UTC, a 16-digit number). The Epoch are seconds since January 1, 1970 midnight (UTC). My Pico Ws have the IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.
 
 
 | File name                                | Contents      |
@@ -125,7 +125,7 @@ In addition to mfm_server's own log file `log.txt`, various files are written an
 
 Interpolation is simply interpolating linearly between two measured values ​​in such a way that one value per second is obtained . The Savitzky-Golay filter (in this form) can only work with equidistant values. With `meas_merge_*` the average is taken from the two interpolations of Counters 1 and 2. With `meas_merge_sgfit_*`, Counters 1 & 2 are first interpolated, then the Savitzky-Golay filter is applied and then the average of these two values ​​is taken.
 
-The grid time is calculated from the measured values ​​written to `meas_merge_sgfit_*`. In `gridtime_2023-09-25.txt` the Epoch time is in the first column. These are the seconds since January 1, 1970 midnight (UTC).
+The grid time is calculated from the measured values ​​written to `meas_merge_sgfit_*`. In `gridtime_2023-09-25.txt` the Epoch time is in the first column. These are the seconds since January 1, 1970 midnight (UTC). In the second column is the grid time offset.
 
 You can see the effect the Savitzky-Golay filter on the measured values ​​in the mfm_bwatcher, for example when loading `meas_data_E661A4D41723262A_2023-09-25.txt` _and_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt`. Implementation see https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553
 
@@ -163,6 +163,33 @@ In "Follow mode" the files from the mfm_server are always read again at the end 
 This screenshot shows the data of Counter 1: `meas_sgfit_E661A4D41723262A_2023-09-27.txt` and Counter 2: `meas_sgfit_E661A4D41770802F_2023-09-27.txt`. The two curves lie very precisely on top of each other, as the Savitzky-Golay filters almost completely smooth out the differences. It has to be said that the differences between the measurements from Counters 1 and 2 are very small anyway and are only really relevant for ripple control signals.
 
 The time on the x-axis is always local time.
+
+#### Menu structure
+
+- File->Read measurements - read all files that start with 'meas_*` except those with local time.
+- File->Read grid time - read the grid time offset `gridtime_*`, but not with local time.
+- File->Read incidents - read the incidents, must match the selected `meas_*` file.
+- File->Remove incidents - remove the incidents.
+- File->Quit - exit the program.
+
+Graphs can be deleted with a right click, after clicking on the graph or picking one in the legend.
+
+When loading grid time you may have to zoom out along the y-Axis to see anything.
+
+- View->Follow mode - switches to follow mode with the actual time range (see line with "Range:" at the bottom left).
+- View->Follow mode 5 mins - switches to follow mode with a 5 min time range.
+- View->Follow mode 15 mins - switches to follow mode with a 15 min time range.
+- View->Go to... - here you can jump to any point in time and set the time range in minutes.
+- View->Jump to PoI - here you can jump to the first, last, previous, next point of interest (PoI).
+
+Points of interest are currently only frequencies above 50.1 or below 49.9. These are searched when reading the first `meas_*` file. Or for the first graph if several are displayed and you select
+
+- Analyze->Find PoIs in measurement #1
+
+They are also searched when you remove the first graph in the list of graohs.
+
+- Help->Interactions - short explanation.
+- Help->About Qt - Qt's standard dialog "About Qt".
 
 
 ### Incidents
