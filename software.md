@@ -167,7 +167,7 @@ Die Zeit auf der x-Achse ist immer die lokale Zeit.
 
 #### Menüstruktur
 
-- File->Read measurements - einlesen aller Dateien die mit 'meas_*` beginnen ausser die mit lokaler Zeit.
+- File->Read measurements - einlesen der Dateien die mit `meas_*` beginnen, ausser die mit lokaler Zeit.
 - File->Read grid time - einlesen des Netzzeitoffsets `gridtime_*`, aber nicht mit lokaler Zeit.
 - File->Read incidents - einlesen der Incidents, müssen zu der gewählten `meas_*` Datei passen.
 - File->Remove incidents - entfernen der Incidents.

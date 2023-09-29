@@ -166,7 +166,7 @@ The time on the x-axis is always local time.
 
 #### Menu structure
 
-- File->Read measurements - read all files that start with 'meas_*` except those with local time.
+- File->Read measurements - read files that start with `meas_*` except those with local time.
 - File->Read grid time - read the grid time offset `gridtime_*`, but not with local time.
 - File->Read incidents - read the incidents, must match the selected `meas_*` file.
 - File->Remove incidents - remove the incidents.
