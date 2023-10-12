@@ -1004,6 +1004,11 @@
     (uuid ff6e0882-ba06-4956-8a1e-96d70c960f02)
   )
 
+  (text "Transformer secondaries max. 2 x 18mA." (at 29.21 73.66 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid b485c22c-fb1f-407f-a434-edf64020fe08)
+  )
+
   (global_label "AC_pwr2" (shape input) (at 45.72 62.23 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 6bbeed13-0452-4a95-9fdf-04eaa9040c5f)
