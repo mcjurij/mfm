@@ -101,6 +101,9 @@ The mfm_server is not (yet) a real server; it lacks so-called daemonizing, which
 
 The Picos have a unique ID, which can be queried with https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51. In the mfm_server it is used in particular to determine the file names for the Counter-related files. After a Pico W has established a connection to the mfm_server, it first sends its ID.
 
+In order for the Pico Ws to contact the mfm_server, you probably have to open port 4200 in a firewall, depending on your Linux distro.
+
+
 ##### Output data files
 
 In addition to mfm_server's own log file `log.txt`, various files are written and continuously appended. If a file comes from a specific Counter, the file name contains the Pico ID. In any case the current date. With an example day, I'll take 2023-09-25, this quickly becomes clear. The first column of all files there is always has a time, either in us-Epoch or Epoch. The us-Epoch are microseconds since January 1, 1970 midnight (UTC, a 16-digit number). The Epoch are seconds since January 1, 1970 midnight (UTC). My Pico Ws have the IDs Counter 1: E661A4D41723262A, Counter 2: E661A4D41770802F.

@@ -104,6 +104,8 @@ Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, d
 
 Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. Nachdem ein Pico W eine Verbindung zum mfm_server aufgebaut hat sendet er als erstes seine ID.
 
+Damit die Pico Ws Kontakt zum mfm_server aufnehmen können, ist es evtl. erforderlich den Port 4200 in einer Firewall freizugeben, abhängig von der Linux Distro.
+
 
 ##### Ausgabedaten
 
