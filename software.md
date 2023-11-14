@@ -57,10 +57,21 @@ git submodule update --init
 export PICO_SDK_PATH=$HOME/<path to pico sdk>/pico-sdk/
 ```
 
-In das Pico W Verzeichnis wechseln, cmake Aufruf.
+Jetzt zum embedded/Pico_W/mfm Verzeichnis um die IP zu setzen von dem Rechner auf dem der mfm_server läuft.
+```
+cd embedded/Pico_W/mfm
+```
+
+Dazu diese Zeile in embedded/Pico_W/mfm/CMakeLists.txt ändern.
+``` 
+ TCP_SERVER_IP=\"192.168.178.XXX\"
+```
+
+
+In das Pico W Verzeichnis wechseln (embedded/Pico_W), dann cmake Aufruf.
 
 ```
-cd embedded/Pico_W/
+cd ..
 
 mkdir build
 cd build
@@ -72,6 +83,13 @@ Das sollte zu diesen Ausgaben führen. Ich habe meine Pfade hier geschwärzt.
 ![cmake Ausgabe](photos/cmake_run.png "cmake")
 
 Zum Bauen `make -j9`. Die UF2 Datei zum flashen ist unter `embedded/Pico_W/build/mfm/mfm_pico_w.uf2`  (747 kb).
+
+Beim nächsten Mal Bauen einfach
+```
+cd build
+make -j9
+```
+und den cmake Aufruf weglassen.
 
 
 
@@ -104,7 +122,14 @@ Der mfm_server ist (noch) kein richtiger Server, es fehlt das sog daemonizing, d
 
 Die Picos haben eine eindeutige ID, diese kann mit https://github.com/mcjurij/mfm/blob/85a41c4bb33529b7771d14aba3f1979061e204ab/embedded/Pico_W/mfm/main.c#L51 abgefragt werden. Im mfm_server dient sie insb. dazu die Dateinamen für die Counter-bezogenen Dateien zu bestimmen. Nachdem ein Pico W eine Verbindung zum mfm_server aufgebaut hat sendet er als erstes seine ID.
 
-Damit die Pico Ws Kontakt zum mfm_server aufnehmen können, ist es evtl. erforderlich den Port 4200 in einer Firewall freizugeben, abhängig von der Linux Distro.
+Damit die Pico Ws Kontakt zum mfm_server aufnehmen können, ist es evtl. erforderlich den Port 4200 in einer Firewall freizugeben, abhängig von der Linux Distro. Auf meinem Fedora dazu
+```
+firewall-cmd --permanent --add-port=4200/tcp
+
+firewall-cmd --reload
+```
+als root User benutzen.
+
 
 
 ##### Ausgabedaten

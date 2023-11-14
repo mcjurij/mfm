@@ -15,7 +15,7 @@ target_link_libraries(mfm_pico_w pico_stdlib pico_multicore pico_cyw43_arch_lwip
 target_compile_definitions(mfm_pico_w PRIVATE
   WIFI_SSID=\"${WIFI_SSID}\"
   WIFI_PASSWORD=\"${WIFI_PASSWORD}\"
-  TCP_SERVER_IP=\"192.168.178.59\"
+  TCP_SERVER_IP=\"192.168.178.74\"
 )
 
 target_include_directories(mfm_pico_w PRIVATE

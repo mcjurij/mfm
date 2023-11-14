@@ -713,7 +713,7 @@ static void init_gridtime_data()
 {
     gridtime_data.ref_second = 0L;
     gridtime_data.prev_second = 0L;
-    if( gridtime_offset > 0. )
+    if( gridtime_offset != 0. )
         gridtime_data.accumulate = (int64_t)llround( 1000000. * gridtime_offset );
     else
         gridtime_data.accumulate = 0LL;
