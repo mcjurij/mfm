@@ -10,6 +10,7 @@
 #include "conf.h"
 #include "process_data.h"
 #include "conn_slots.h"
+// #include "process_ringbuffer.h"
 #include "file_mgr.h"
 
 static double gridtime_offset = 0.;
@@ -21,7 +22,8 @@ void set_gridtime_offset( double offs )
 }
 
 
-static pthread_mutex_t mutex_pd_wrt, mutex_pd_rd, mutex_send_data;
+static pthread_mutex_t mutex_signal_data;
+static pthread_cond_t cond_data;
 
 static int copy_send_id;
 static int copy_samples_count;
@@ -33,28 +35,25 @@ static time_t time_s_next_rotate = 0;
 
 void send_data( int send_id, const sample_t *samples, int samples_size)
 {
-    pthread_mutex_lock( &mutex_send_data );
+    pthread_mutex_lock( &mutex_signal_data );
     
     copy_send_id = send_id;
 
     copy_samples_count = samples_size < MAX_COPY_SAMPLES ? samples_size : MAX_COPY_SAMPLES;
     memcpy( copy_samples, samples, sizeof(sample_t) * copy_samples_count);
     
-    pthread_mutex_unlock( &mutex_pd_wrt );
     // process_data_thread() can now copy data
-    pthread_mutex_lock( &mutex_pd_rd );    // wait for reader
-
-    pthread_mutex_unlock( &mutex_send_data );
+    pthread_cond_signal( &cond_data );
+    
+    pthread_mutex_unlock( &mutex_signal_data );
 }
 
 
 void init_process_data()
 {
-    pthread_mutex_init( &mutex_pd_wrt, 0);
-    pthread_mutex_init( &mutex_pd_rd, 0);
-    pthread_mutex_init( &mutex_send_data, 0);
-    
-    pthread_mutex_lock( &mutex_pd_wrt );  // start with waiting for writer
+    pthread_mutex_init( &mutex_signal_data, 0);
+    pthread_cond_init( &cond_data, 0);
+    copy_samples_count = 0;
 }
 
 
@@ -233,20 +232,27 @@ void *process_data_thread(void *)
     int check_rotate_cnt = 0;
     
     do {
-        pthread_mutex_lock( &mutex_pd_wrt );
+        pthread_mutex_lock( &mutex_signal_data );
+
+        while( copy_samples_count == 0 ) {
+            // printf("process_data_thread(): Going into wait...\n" );
+            pthread_cond_wait( &cond_data, &mutex_signal_data);
+            // printf("process_data_thread(): Condition signal received. samples count = %d\n", copy_samples_count);
+        }
         conn_id = copy_send_id;
         
         samples_count = copy_samples_count;
         
         memcpy( process_slots[ conn_id ].input_samples, copy_samples, sizeof(sample_t) * copy_samples_count);
+        copy_samples_count  = 0;
         
-        pthread_mutex_unlock( &mutex_pd_rd );    // signal done reading
+        pthread_mutex_unlock( &mutex_signal_data );    // done reading
         
         process_slots[ conn_id ].input_count = samples_count;
         
         char *conn_idstr = conn_slots[ conn_id ].idstr;
         // slog( "process_data_thread(): From %s (%d), come %d samples\n", conn_idstr, conn_id, samples_count);
-
+        
         if( strcmp( process_slots[ conn_id ].idstr, conn_idstr) != 0 )
         {
             if( process_slots[ conn_id ].file_meas_id != -1 )

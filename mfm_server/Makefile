@@ -19,9 +19,15 @@ process_data.o: process_data.c process_data.h conn_slots.h file_mgr.h conf.h
 
 process_data.h: proto.h
 
-file_mgr.o: file_mgr.c conf.h process_data.h
+#process_ringbuffer.o: process_ringbuffer.c process_ringbuffer.h
+#	gcc -pthread -g -c -Wall -o process_ringbuffer.o process_ringbuffer.c
+
+#process_ringbuffer.h:
+
+file_mgr.o: file_mgr.c file_mgr.h conf.h process_data.h
 	gcc -pthread -g -c -Wall -o file_mgr.o file_mgr.c
 
+file_mgr.h:
 
 clean:
 	rm mfm_server server.o proto.o conn_slots.o process_data.o file_mgr.o
