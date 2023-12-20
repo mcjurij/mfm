@@ -5,7 +5,7 @@ Mains Frequency Measurement
 > Note that this translation is mostly a google translate jobby, with my improvements. It is a bit bumpy I guess, but I think it should be clear. If you have language improvements, please let me know.
 
 > [!NOTE]
-> If you happen to live in an area where the mains voltage is lower than 230 V but with 50 Hz, than the circuit has to be changed so that the input voltage devider is adapted and the transformer for the front end needs to be 110V (or whatever your mains volatage is) to two times 9Vac.
+> If you happen to live in an area where the mains voltage is lower than 230 V but with 50 Hz, than the circuit has to be changed so that the input voltage devider is adapted and the transformer for the front end needs to be 110V (or whatever your mains volatage is) to convert to two times 9Vac.
 
 > [!NOTE]
 > If you happen to live in an area where the mains frequency is 60 Hz, but with 230 V, than the circuit has to not be changed, but the software. It is a long time ago I tested my circuit with 60 Hz. It is likely not enough to change the MAINS_FREQ in the `conf.h` files.
