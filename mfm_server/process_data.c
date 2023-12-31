@@ -389,16 +389,24 @@ static void write_region( process_slot_t *process_slot )
                 process_slot->first_second = false;
                 
                 process_slot->ref_second =  process_slot->times[ 0 ] / 1000000LL;
-                process_slot->second_offs = process_slot->ref_second;      // offset to begin of region
-                process_slot->second_interp = process_slot->ref_second;    // second of last interpolation
+                process_slot->second_interp = process_slot->ref_second;      // second of last interpolation
                 
                 int64_t time0 = process_slot->times[ 0 ];
                 int64_t time1 = process_slot->times[ 1 ];
-            
-                while( ! ( time0 <= conv2us( process_slot->second_interp ) && conv2us( process_slot->second_interp ) < time1 ) )
-                    process_slot->second_interp++;
+                int64_t diff = time1 - time0;
                 
-                process_slot->second_offs = process_slot->second_interp;
+                if( diff > 1000000LL )
+                {
+                    int n = 0;
+                    while( ! ( time0 <= conv2us( process_slot->second_interp ) && conv2us( process_slot->second_interp ) < time1 ) )
+                    {
+                        process_slot->second_interp++;
+                        if( ++n > 4 )
+                            slog( "Large gap in data, difference is %ld us\n", diff);
+                    }
+                }
+                
+                process_slot->second_offs = process_slot->second_interp;     // offset to begin of region
                 
                 int time_idx = 0;
                 int idx, idx_local, sg_lines = 0;
@@ -441,7 +449,7 @@ static void write_region( process_slot_t *process_slot )
                             memmove( process_slot->interp_region, process_slot->interp_region + 1, sizeof(double) * (REGION_SIZE - 1));   
                         }
                     }
-                    else if( conv2us( process_slot->second_interp ) >= time1 )
+                    else //if( conv2us( process_slot->second_interp ) >= time1 )
                         time_idx++;
                 }
                 
