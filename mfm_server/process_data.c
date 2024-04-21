@@ -59,7 +59,9 @@ void init_process_data()
 
 
 #define REGION_SIZE 15
-#define TAIL_SIZE 19
+#define TAIL_SIZE 7
+#define INTERP_TAIL_SIZE 5
+
 static const int region = 15;
 
 typedef struct {
@@ -69,20 +71,21 @@ typedef struct {
     int      tail_count;
     int64_t  times[ TAIL_SIZE ]; // in us
     double   freqs[ TAIL_SIZE ];
-    time_t   ref_second;
-    time_t   second_offs;
-    time_t   second_interp;
+    
+    int      interp_count;
+    int64_t  interp_times[ INTERP_TAIL_SIZE ]; // in us
+    double   interp_freqs[ INTERP_TAIL_SIZE ];
+    int64_t  old_start_second;
+    
     bool     first_second;
     int      interp_region_count;
-    double   interp_region[ REGION_SIZE ];
+    time_t   interp_region_times[ REGION_SIZE ];
+    double   interp_region_freqs[ REGION_SIZE ];
     
     int      file_meas_id;
     int      file_meas_local_id;
     int      file_sg_id;
-    int      file_sg_local_id;
-    
-    FILE    *out_file_tail;
-    FILE    *out_file_tail_local;
+    int      file_sg_local_id;    
 } process_slot_t;
 
 static  process_slot_t process_slots[ MAX_CONN_SLOT ];
@@ -235,9 +238,9 @@ void *process_data_thread(void *)
         pthread_mutex_lock( &mutex_signal_data );
 
         while( copy_samples_count == 0 ) {
-            // printf("process_data_thread(): Going into wait...\n" );
+            printf("process_data_thread(): Going into wait...\n" );
             pthread_cond_wait( &cond_data, &mutex_signal_data);
-            // printf("process_data_thread(): Condition signal received. samples count = %d\n", copy_samples_count);
+            printf("process_data_thread(): Condition signal received. samples count = %d\n", copy_samples_count);
         }
         conn_id = copy_send_id;
         
@@ -281,14 +284,6 @@ void *process_data_thread(void *)
             
             snprintf( fn, 60, "meas_sgfit_local_%s", conn_idstr);
             process_slots[ conn_id ].file_sg_local_id = reg_file( fn );
-            
-            
-            char fn_local[60];
-            
-            snprintf( fn, 60, "meas_tail_%s.txt", conn_idstr);
-            snprintf( fn_local, 60, "meas_tail_local_%s.txt", conn_idstr);
-            process_slots[ conn_id ].out_file_tail = fopen( fn, "w");
-            process_slots[ conn_id ].out_file_tail_local = fopen( fn_local, "w");
         }
         
         meas_write_data( process_slots + conn_id );
@@ -344,6 +339,7 @@ static int64_t conv2us( time_t t )
     return (int64_t)t * 1000000LL;
 }
 
+static int interpolate_tail( int64_t start_second, int64_t end_second, process_slot_t *process_slot);
 static double interpolate( int64_t at_second, int64_t time0, double freq0, int64_t time1, double freq1);
 static double sgfit( const double *y );
 
@@ -352,7 +348,7 @@ static void write_region( process_slot_t *process_slot )
 {
     for( int n = 0; n < process_slot->input_count; n++)
     {
-        int64_t time = process_slot->input_samples[ n ].time;        
+        int64_t time = process_slot->input_samples[ n ].time;
         double  freq = process_slot->input_samples[ n ].freq;
         
         if( process_slot->tail_count < TAIL_SIZE )
@@ -368,148 +364,75 @@ static void write_region( process_slot_t *process_slot )
             process_slot->times[ TAIL_SIZE-1 ] = time;
             process_slot->freqs[ TAIL_SIZE-1 ] = freq;
             
-            rewind( process_slot->out_file_tail );
-            rewind( process_slot->out_file_tail_local);
-            
-            for( int i = 0; i < TAIL_SIZE; i++)
+            int64_t interp_start,interp_end;
+
+            interp_start = process_slot->times[ 0 ] - process_slot->times[ 0 ] % 1000000LL;
+            interp_end = process_slot->times[ TAIL_SIZE-1 ] - process_slot->times[ TAIL_SIZE-1 ] % 1000000LL;
+            int pts = interpolate_tail( interp_start, interp_end, process_slot);
+
+            /*
+            if( process_slot->interp_count > 0 )
             {
-                fprintf( process_slot->out_file_tail, "%ld  %.6f\n", process_slot->times[ i ], process_slot->freqs[ i ]);
-                
-                char buf[30];
-                
-                time_us_64_to_str( buf, 30, process_slot->times[ i ]);
-                fprintf( process_slot->out_file_tail_local, "%s,%.6f\n", buf, process_slot->freqs[ i ]);
-            }
+                printf( "   -> pts = %d\n", pts);
+                for( int n = 0; n < process_slot->interp_count; n++)
+                {
+                    int64_t second = process_slot->interp_times[ n ]; // / 1000000LL;
+                    double  int_freq =  process_slot->interp_freqs[ n ];
             
-            fflush( process_slot->out_file_tail );
-            fflush( process_slot->out_file_tail_local );
-            
-            if( process_slot->first_second  )
-            {
-                process_slot->first_second = false;
-                
-                process_slot->ref_second =  process_slot->times[ 0 ] / 1000000LL;
-                process_slot->second_interp = process_slot->ref_second;      // second of last interpolation
-                
-                int64_t time0 = process_slot->times[ 0 ];
-                int64_t time1 = process_slot->times[ 1 ];
-                int64_t diff = time1 - time0;
-                
-                if( diff > 1000000LL )
-                {
-                    int n = 0;
-                    while( ! ( time0 <= conv2us( process_slot->second_interp ) && conv2us( process_slot->second_interp ) < time1 ) )
-                    {
-                        process_slot->second_interp++;
-                        if( ++n > 4 )
-                            slog( "Large gap in data, difference is %ld us\n", diff);
-                    }
-                }
-                
-                process_slot->second_offs = process_slot->second_interp;     // offset to begin of region
-                
-                int time_idx = 0;
-                int idx, idx_local, sg_lines = 0;
-                while( time_idx < TAIL_SIZE-1 )
-                {
-                    time0 = process_slot->times[ time_idx ];
-                    time1 = process_slot->times[ time_idx+1 ];
-                    
-                    if( time0 <= conv2us( process_slot->second_interp ) && conv2us( process_slot->second_interp ) < time1 )
-                    {
-                        double freq0 = process_slot->freqs[ time_idx ];
-                        double freq1 = process_slot->freqs[ time_idx+1 ];
-                        double freq_inter = interpolate( conv2us( process_slot->second_interp ), time0, freq0, time1, freq1);
-                        
-                        write_merge( &merge_data, process_slot->second_interp, freq_inter);
-                        
-                        process_slot->interp_region[ process_slot->interp_region_count ] = freq_inter;
-                        process_slot->interp_region_count++;
-                        process_slot->second_interp++;
-                        
-                        if( process_slot->interp_region_count == REGION_SIZE )  // region buffer full?
-                        {
-                            time_t s = process_slot->second_offs + REGION_SIZE/2;
-                            struct tm t;
-                            localtime_r( &s, &t);
-                            char buf[30];
-                            strftime( buf, 30, "%F %T", &t);
-                            double fitted = sgfit( process_slot->interp_region );
-                            
-                            write_merge( &merge_sgfit, s, fitted);
-                            
-                            idx = rotate_file( conv2us( s ), process_slot->file_sg_id);
-                            idx_local = rotate_file( conv2us( s ), process_slot->file_sg_local_id);
-                            file_mgr_fprintf( idx, "%ld  %.6f\n", conv2us( s ), fitted);
-                            file_mgr_fprintf( idx_local, "%s,%.6f\n", buf, fitted);
-                            sg_lines++;
-                            
-                            process_slot->second_offs++;
-                            process_slot->interp_region_count--;
-                            memmove( process_slot->interp_region, process_slot->interp_region + 1, sizeof(double) * (REGION_SIZE - 1));   
-                        }
-                    }
-                    else //if( conv2us( process_slot->second_interp ) >= time1 )
-                        time_idx++;
-                }
-                
-                if( sg_lines > 0 )
-                {
-                    file_mgr_fflush( idx );
-                    file_mgr_fflush( idx_local );
+                    printf( "   -> %d: %jd  %f\n", n, second, int_freq);
                 }
             }
             else
+                printf( "  nothing\n");
+            */
+            
+            if( pts > 0 )
             {
-                int64_t time0 = process_slot->times[ TAIL_SIZE-2 ];
-                int64_t time1 = process_slot->times[ TAIL_SIZE-1 ];
-                
-                if( time1 - time0 < MAX_INTERPOLATE_SPAN )
+                if( process_slot->first_second  )
                 {
-                    while( time0 <= conv2us( process_slot->second_interp ) && conv2us( process_slot->second_interp ) < time1 )
-                    {
-                        double freq0 = process_slot->freqs[ TAIL_SIZE-2 ];
-                        double freq1 = process_slot->freqs[ TAIL_SIZE-1 ];
-                        double freq_inter = interpolate( conv2us( process_slot->second_interp ), time0, freq0, time1, freq1);
-                        
-                        write_merge( &merge_data, process_slot->second_interp, freq_inter);
-                        
-                        process_slot->interp_region[ process_slot->interp_region_count ] = freq_inter;
-                        process_slot->interp_region_count++;
-                        process_slot->second_interp++;
-                        
-                        if( process_slot->interp_region_count == REGION_SIZE )  // region buffer full?
-                        {
-                            time_t s = process_slot->second_offs + REGION_SIZE/2;
-                            struct tm t;
-                            localtime_r( &s, &t);
-                            char buf[30];
-                            strftime( buf, 30, "%F %T", &t);
-                            double fitted = sgfit( process_slot->interp_region );
-                            
-                            write_merge( &merge_sgfit, s, fitted);
-                            
-                            int idx, idx_local;
-                            idx = rotate_file( conv2us( s ), process_slot->file_sg_id);
-                            idx_local = rotate_file( conv2us( s ), process_slot->file_sg_local_id);
-                            
-                            file_mgr_fprintf( idx, "%ld  %.6f\n", conv2us( s ), fitted);
-                            file_mgr_fprintf( idx_local, "%s,%.6f\n", buf, fitted);
-                            
-                            file_mgr_fflush( idx );
-                            file_mgr_fflush( idx_local );
-                            
-                            process_slot->second_offs++;
-                            process_slot->interp_region_count--;
-                            memmove( process_slot->interp_region, process_slot->interp_region + 1, sizeof(double) * (REGION_SIZE - 1));
-                        }
-                    }
+                    process_slot->first_second = false;
+                    process_slot->old_start_second = process_slot->interp_times[ 0 ];
                 }
-                else
+                else if( process_slot->old_start_second < process_slot->interp_times[ 0 ] )
                 {
-                    process_slot->tail_count = 0;
-                    process_slot->first_second = true;
-                    process_slot->interp_region_count = 0;
+                    process_slot->old_start_second = process_slot->interp_times[ 0 ];
+                    
+                    int64_t second_ts = process_slot->interp_times[ 0 ];
+                    time_t second = (time_t) (second_ts / 1000000LL);
+                    double  freq_inter =  process_slot->interp_freqs[ 0 ];
+                    printf( "   -> NEW: %d: %jd  %f\n", n, second_ts, freq_inter);
+                    
+                    write_merge( &merge_data, second, freq_inter);
+                    
+                    process_slot->interp_region_times[ process_slot->interp_region_count ] = second;
+                    process_slot->interp_region_freqs[ process_slot->interp_region_count ] = freq_inter;
+                    process_slot->interp_region_count++;
+                    
+                    if( process_slot->interp_region_count == REGION_SIZE )  // region buffer full?
+                    {
+                        // FIXME we need to check whether the time stamps are contiguous
+                        time_t s = process_slot->interp_region_times[ REGION_SIZE/2 ];
+                        struct tm t;
+                        localtime_r( &s, &t);
+                        char buf[30];
+                        strftime( buf, 30, "%F %T", &t);
+                        double fitted = sgfit( process_slot->interp_region_freqs );
+                        
+                        write_merge( &merge_sgfit, s, fitted);
+                        
+                        int idx, idx_local;
+                        idx = rotate_file( conv2us( s ), process_slot->file_sg_id);
+                        idx_local = rotate_file( conv2us( s ), process_slot->file_sg_local_id);
+                        file_mgr_fprintf( idx, "%ld  %.6f\n", conv2us( s ), fitted);
+                        file_mgr_fprintf( idx_local, "%s,%.6f\n", buf, fitted);
+
+                        file_mgr_fflush( idx );
+                        file_mgr_fflush( idx_local );
+                        
+                        process_slot->interp_region_count--;
+                        memmove( process_slot->interp_region_times, process_slot->interp_region_times + 1, sizeof(time_t) * (REGION_SIZE - 1));
+                        memmove( process_slot->interp_region_freqs, process_slot->interp_region_freqs + 1, sizeof(double) * (REGION_SIZE - 1));
+                    }
                 }
             }
         }
@@ -523,14 +446,13 @@ static void reset_process_slot( process_slot_t *process_slot )
     process_slot->tail_count = 1;
     process_slot->times[0] = 0LL;
     process_slot->freqs[0] = 0.;
+    process_slot->old_start_second = 0LL;
     process_slot->interp_region_count = 0;
     process_slot->first_second = true;
     process_slot->file_meas_id = -1;
     process_slot->file_meas_local_id = -1;
     process_slot->file_sg_id = -1;
     process_slot->file_sg_local_id = -1;
-    process_slot->out_file_tail = 0;
-    process_slot->out_file_tail_local = 0;
 }
 
 
@@ -550,6 +472,59 @@ static void init_process_slots()
 
         init_process_slot( process_slot );
     }
+}
+
+
+static int interpolate_tail( int64_t start_second, int64_t end_second, process_slot_t *process_slot)
+{
+    int pts = 0;
+    int idx = 0;
+    process_slot->interp_count = 0;
+    
+    for( int64_t sec = start_second; sec <= end_second; )
+    {
+        int64_t time0, time1;
+        double  freq0, freq1;
+    
+        time0 = process_slot->times[ idx ]; // in us
+        freq0 = process_slot->freqs[ idx ];
+        do {
+            if( sec < time0 )
+            {
+                sec += 1000000LL;
+                //printf( "adjust by 1 sec\n");
+            }
+            else
+                break;
+        } while( 1 );
+    
+        time1 = process_slot->times[ idx + 1 ];
+        freq1 = process_slot->freqs[ idx + 1 ];
+    
+    
+        //printf( "0: %jd  %.6f\n", time0, freq0);
+        //printf( "   %jd\n", sec);
+        //printf( "1: %jd  %.6f\n", time1, freq1);
+        assert( time0 <= sec );
+        if( sec < time1 )
+        {
+            double interp_freq = interpolate( sec, time0, freq0, time1, freq1);
+            // printf( "   f = %.6f\n", interp_freq);
+        
+            process_slot->interp_times[ process_slot->interp_count ] = sec;
+            process_slot->interp_freqs[ process_slot->interp_count ] = interp_freq;
+            pts++;
+            process_slot->interp_count++;
+            if( process_slot->interp_count == INTERP_TAIL_SIZE )
+                break;
+        }
+    
+        if( idx < TAIL_SIZE-1 )
+            idx++;
+        else
+            break;
+    }
+    return pts;
 }
 
 
