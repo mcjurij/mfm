@@ -158,9 +158,10 @@ Die Interpolation ist einfach zwischen zwei Messwerten linear interpoliert, und 
 
 Die Netzzeit wird aus den Messwerten berechnet die in `meas_merge_sgfit_*` geschrieben werden. In `gridtime_2023-09-25.txt` steht die Epoch Zeit in der ersten Spalte. Das sind die Sekunden seit dem 1.1.1970 0 Uhr. In der zweiten Spalte steht der Netzzeitoffset.
 
-Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut. Implementation siehe  https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553 
+Welchen Effekt der Savitzky-Golay Filter auf die Messwerte hat, kann man sehr schön im mfm_bwatcher sehen, in dem man sich zB. `meas_data_E661A4D41723262A_2023-09-25.txt` _und_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt` anschaut, wobei man natürlich die Pico W ID und das Datum anpassen muss. Implementation siehe 
+https://github.com/mcjurij/mfm/blob/0261355ed0bb614fb97571ce3041f7e02aebb63d/mfm_server/process_data.c#L542
 
-Im mfm_server Log-File `log.txt` finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents. finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents.
+Im mfm_server Log-File `log.txt` finden sich verschiedene Dinge: Meldungen zum Zeitabgleich, Meldungen zur File Rotation, Meldungen zu unplausibel langen Abständen zwischen 2 Messungen, Meldungen zu empfangenen Incidents die vom Pico W generiert werden.
 
 Zu Incidents schreibe ich weiter unten was.
 

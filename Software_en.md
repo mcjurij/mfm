@@ -155,7 +155,8 @@ Interpolation is simply interpolating linearly between two measured values ​�
 
 The grid time is calculated from the measured values ​​written to `meas_merge_sgfit_*`. In `gridtime_2023-09-25.txt` the Epoch time is in the first column. These are the seconds since January 1, 1970 midnight (UTC). In the second column is the grid time offset.
 
-You can see the effect the Savitzky-Golay filter on the measured values ​​in the mfm_bwatcher, for example when loading `meas_data_E661A4D41723262A_2023-09-25.txt` _and_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt`. Implementation see https://github.com/mcjurij/mfm/blob/5b119eb627beb55587a3f4324e777724062568a9/mfm_server/process_data.c#L553
+You can see the effect the Savitzky-Golay filter on the measured values ​​in the mfm_bwatcher, for example when loading `meas_data_E661A4D41723262A_2023-09-25.txt` _and_ `meas_sgfit_E661A4D41723262A_2023-09-25.txt`. Implementation see 
+https://github.com/mcjurij/mfm/blob/0261355ed0bb614fb97571ce3041f7e02aebb63d/mfm_server/process_data.c#L542
 
 There are various things in the mfm_server log file `log.txt`: messages about time synchronization, messages about file rotation, messages about implausibly long intervals between 2 measurements, messages about received incidents.
 
