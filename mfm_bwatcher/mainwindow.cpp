@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes | QCP::iSelectLegend | QCP::iSelectPlottables);
     //ui->customPlot->xAxis->setRange(-8, 8);
     ui->customPlot->yAxis->setRange( Conf::GRAPH_DEFAULT_YMIN, Conf::GRAPH_DEFAULT_YMAX);
+    yAxisType = YAxisType::YAXIS_MEAS;
     ui->customPlot->axisRect()->axis(QCPAxis::atRight, 0)->setPadding(5);
     ui->customPlot->axisRect()->setupFullAxesBox();
     //ui->customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
@@ -294,10 +295,16 @@ void MainWindow::addGraph( const QVector<double>& x, const QVector<double>& y, c
     graphPen.setWidthF(2.0);
     ui->customPlot->graph()->setPen(graphPen);
 
-    if( type == DType::MEAS )
+
+    if( yAxisType != YAxisType::YAXIS_MEAS && type == DType::MEAS )
+    {
         ui->customPlot->yAxis->setRange( Conf::GRAPH_DEFAULT_YMIN, Conf::GRAPH_DEFAULT_YMAX);
-    else if( type == DType::GRIDTIME )
+        yAxisType = YAxisType::YAXIS_MEAS;
+    }
+    else if( yAxisType != YAxisType::YAXIS_GRIDTIME && type == DType::GRIDTIME ) {
         ui->customPlot->yAxis->setRange( Conf::GRAPH_GRIDTIME_YMIN, Conf::GRAPH_GRIDTIME_YMAX);
+        yAxisType = YAxisType::YAXIS_GRIDTIME;
+    }
 
     ui->customPlot->replot();
 }

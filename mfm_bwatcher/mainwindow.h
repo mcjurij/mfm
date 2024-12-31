@@ -64,6 +64,7 @@ private slots:
 
 private:
     enum class DType { MEAS, GRIDTIME };
+    enum class YAxisType { YAXIS_UNSET, YAXIS_MEAS, YAXIS_GRIDTIME};
 
     void addGraph( const QVector<double>& x, const QVector<double>& y, const QString& name, DType type);
     void addIncident( double time_s, const QString& text);
@@ -81,6 +82,7 @@ private:
         qint64 pos;
         DType  type;
     };
+    YAxisType yAxisType;
     Ui::MainWindow *ui;
     QTimer followTimer;
     QMap<QString, posInfo>  oldFilePos;
