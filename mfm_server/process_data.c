@@ -238,9 +238,9 @@ void *process_data_thread(void *)
         pthread_mutex_lock( &mutex_signal_data );
 
         while( copy_samples_count == 0 ) {
-            printf("process_data_thread(): Going into wait...\n" );
+            // printf("process_data_thread(): Going into wait...\n" );
             pthread_cond_wait( &cond_data, &mutex_signal_data);
-            printf("process_data_thread(): Condition signal received. samples count = %d\n", copy_samples_count);
+            // printf("process_data_thread(): Condition signal received. samples count = %d\n", copy_samples_count);
         }
         conn_id = copy_send_id;
         
@@ -400,7 +400,7 @@ static void write_region( process_slot_t *process_slot )
                     int64_t second_ts = process_slot->interp_times[ 0 ];
                     time_t second = (time_t) (second_ts / 1000000LL);
                     double  freq_inter =  process_slot->interp_freqs[ 0 ];
-                    printf( "   -> NEW: %d: %jd  %f\n", n, second_ts, freq_inter);
+                    printf( "   -> %s: %jd  %f\n", process_slot->idstr, second_ts, freq_inter);
                     
                     write_merge( &merge_data, second, freq_inter);
                     
